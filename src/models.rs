@@ -2,82 +2,114 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct SdmxResponse {
-    pub data: Data,
+pub struct SdmxResponse<T> {
+    pub data: T,
     pub meta: Meta,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Data {
-    pub dataflows: Vec<Dataflow>,
+pub struct Dataflows {
+    pub dataflows: Box<[Dataflow]>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Dataflow {
-    pub id: String,
-    pub version: String,
+    pub id: Box<str>,
+    pub version: Box<str>,
     #[serde(rename = "agencyID")]
-    pub agency_id: String,
+    pub agency_id: Box<str>,
     pub is_final: bool,
-    pub name: String,
+    pub name: Box<str>,
     pub names: Names,
-    pub description: Option<String>,
+    pub description: Option<Box<str>>,
     pub descriptions: Option<Descriptions>,
-    pub annotations: Vec<Annotation>,
-    pub structure: String,
+    pub annotations: Option<Vec<Annotation>>,
+    pub structure: Option<Box<str>>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Names {
-    pub en: String,
+    pub en: Box<str>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Descriptions {
-    pub en: String,
+    pub en: Box<str>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Annotation {
     #[serde(rename = "type")]
-    pub type_field: String,
-    pub text: Option<String>,
+    pub type_field: Box<str>,
+    pub text: Option<Box<str>>,
     pub texts: Option<Texts>,
-    pub title: Option<String>,
-    pub id: Option<String>,
+    pub title: Option<Box<str>>,
+    pub id: Option<Box<str>>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Texts {
-    pub en: String,
+    pub en: Box<str>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Meta {
-    pub schema: String,
-    pub content_languages: Vec<String>,
-    pub id: String,
-    pub prepared: String,
+    pub schema: Box<str>,
+    pub content_languages: Box<[Box<str>]>,
+    pub id: Box<str>,
+    pub prepared: Box<str>,
     pub test: bool,
     pub sender: Sender,
-    pub receiver: Vec<Receiver>,
+    pub receiver: Box<[Receiver]>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Sender {
-    pub id: String,
+    pub id: Box<str>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Receiver {
-    pub id: String,
+    pub id: Box<str>,
 }
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DataStructures {
+    pub data_structures: Box<[DataStructure]>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DataStructure {
+    pub id: Box<str>,
+    pub links: Box<[Link]>,
+    pub version: Box<str>,
+    #[serde(rename = "agencyID")]
+    pub agency_id: Box<str>,
+    pub is_external_reference: bool,
+    pub is_final: bool,
+    pub name: Box<str>,
+    pub names: Names,
+    pub data_structure_components: DataStructureComponents,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Link {
+    pub href: Box<str>,
+    pub rel: Box<str>,
+}
+
+#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DataStructureComponents {}
