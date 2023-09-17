@@ -25,6 +25,9 @@ pub enum ErrorCode {
     #[error("URL cannot be a base")]
     UrlCannotBeABase,
 
+    #[error("Data key length cannot be larger than {0}")]
+    DataKeyLengthExceeded(usize),
+
     #[error("UTF-8 decode error: {0}")]
     Utf8Decode(#[from] std::str::Utf8Error),
 

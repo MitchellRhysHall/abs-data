@@ -1,9 +1,10 @@
-mod client;
+mod builders;
 mod error_code;
 mod models;
+use builders::client::SdmxClient;
+use models::typed::enums::{AgencyId, MetaDetail, StructureType};
 
-use client::{AgencyId, SdmxClient, StructureType, Stub};
-use models::{DataStructures, Dataflows};
+use crate::models::derived::dataflows::Dataflows;
 
 use crate::error_code::Result;
 
@@ -11,7 +12,21 @@ pub async fn get_dataflow_ids(agency_id: AgencyId) -> Result<Vec<String>> {
     Ok(SdmxClient::new()
         .get()
         .meta(&StructureType::DataFlow, &agency_id)
-        .stub(Stub::All)
+        .detail(MetaDetail::All)
+        .build()
+        .send::<Dataflows>()
+        .await?
+        .data
+        .dataflows
+        .iter()
+        .map(|dataflow| dataflow.id.to_string())
+        .collect())
+}
+
+pub async fn get_data(dataflow_id: &str, datakey: &str) -> Result<Vec<String>> {
+    Ok(SdmxClient::new()
+        .get()
+        .data(dataflow_id, datakey)
         .build()
         .send::<Dataflows>()
         .await?
@@ -25,10 +40,11 @@ pub async fn get_dataflow_ids(agency_id: AgencyId) -> Result<Vec<String>> {
 #[cfg(test)]
 mod tests {
     use flexi_logger::{FileSpec, Logger};
-    use log::info;
-    use std::io::Write;
 
-    use crate::client::{SdmxClient, Stub};
+    use crate::{
+        builders::datakey::{DataKey, DataKeyBuilder},
+        models::typed::enums::{Frequency, Measure, Region},
+    };
 
     use super::*;
 
@@ -50,16 +66,18 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn data() {
-        let client = SdmxClient::new();
+    async fn data() -> Result<()> {
+        init_logger();
+        let key = DataKeyBuilder::new()
+            .add_measure(Measure::M1)
+            .add_frequency(Frequency::Quarterly)
+            .add_region(Region::Aus)
+            .build()?;
 
-        let response = client
-            .get()
-            .data("ABS,CPI,1.0.0", "1.1.1.1.1")
-            .build()
-            .send::<Dataflows>()
-            .await;
+        let response = crate::get_data("CPI", key.as_ref()).await?;
 
-        assert!(response.is_ok())
+        println!("{:?}", response);
+
+        Ok(())
     }
 }

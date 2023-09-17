@@ -1,0 +1,2 @@
+INFO [abs_data::builders::data_request] https://api.data.abs.gov.au/data/CPI/M1.AUS.Q
+INFO [abs_data::builders::request] "https://api.data.abs.gov.au/data/CPI/M1.AUS.Q"
