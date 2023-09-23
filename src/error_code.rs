@@ -28,9 +28,12 @@ pub enum ErrorCode {
     #[error("Data key length cannot be larger than {0}")]
     DataKeyLengthExceeded(usize),
 
+    #[error("Data key contains non number: {0}")]
+    DataKeyContainsNonNumber(Box<str>),
+
     #[error("UTF-8 decode error: {0}")]
     Utf8Decode(#[from] std::str::Utf8Error),
 
     #[error("Custom error: {0}")]
-    Custom(String),
+    Custom(Box<str>),
 }

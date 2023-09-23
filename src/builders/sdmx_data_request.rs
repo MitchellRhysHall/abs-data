@@ -21,6 +21,7 @@ pub struct SdmxDataRequestBuilder<'a> {
     detail: Option<Detail>,
     dimension_at_observation: Option<DimensionAtObservation<'a>>,
     key: Option<&'a str>,
+    headers: &'a [(&'a str, &'a str)],
 }
 
 impl<'a> SdmxDataRequestBuilder<'a> {
@@ -31,6 +32,7 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         dataflow_identifier: DataflowIdentifier,
         data_key: DataKey,
         key: Option<&'a str>,
+        headers: &'a [(&'a str, &'a str)],
     ) -> Self {
         Self {
             client,
@@ -43,6 +45,7 @@ impl<'a> SdmxDataRequestBuilder<'a> {
             detail: None,
             dimension_at_observation: None,
             key,
+            headers,
         }
     }
 
@@ -76,10 +79,10 @@ impl<'a> SdmxDataRequestBuilder<'a> {
             .add_path_segment(format!("{}", self.data_key));
 
         if let Some(start_period) = &self.start_period {
-            url_builder = url_builder.add_query_param("start_period", start_period.to_string());
+            url_builder = url_builder.add_query_param("startPeriod", start_period.to_string());
         }
         if let Some(end_period) = &self.end_period {
-            url_builder = url_builder.add_query_param("end_period", end_period.to_string());
+            url_builder = url_builder.add_query_param("endPeriod", end_period.to_string());
         }
         if let Some(detail) = &self.detail {
             url_builder = url_builder.add_query_param("detail", detail.to_string());
@@ -94,6 +97,6 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         let url = url_builder.build().expect("Failed to build url");
         info!("{}", url);
 
-        SdmxRequest::new(self.client, url, self.key)
+        SdmxRequest::new(self.client, url, self.key, self.headers)
     }
 }

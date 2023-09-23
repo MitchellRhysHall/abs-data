@@ -45,11 +45,11 @@ impl TryFrom<DataflowIdentifierDimensions<'_>> for DataflowIdentifier {
     fn try_from(dimensions: DataflowIdentifierDimensions) -> Result<Self> {
         let mut dimensions_vec = Vec::new();
 
-        dimensions_vec.push(dimensions.dataflow_id.to_string());
-
         if let Some(agency_id) = dimensions.agency_id {
             dimensions_vec.push(agency_id.to_string());
         }
+
+        dimensions_vec.push(dimensions.dataflow_id.to_string());
 
         if let Some(version) = dimensions.version {
             dimensions_vec.push(version.to_string());

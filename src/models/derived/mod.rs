@@ -1,3 +1,13 @@
+pub mod annotation;
+pub mod data_sets;
+pub mod data_structure_components;
 pub mod data_structures;
 pub mod dataflows;
+pub mod descriptions;
+pub mod link;
+pub mod meta;
+pub mod names;
+pub mod receiver;
 pub mod sdmx_response;
+pub mod sender;
+pub mod texts;

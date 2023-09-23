@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::models::typed::dataflow_id::DataflowId;
 
-use super::sdmx_response::{Annotation, Descriptions, Names};
+use super::{annotation::Annotation, descriptions::Descriptions, names::Names};
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

@@ -1,10 +1,15 @@
 mod builders;
 mod error_code;
+pub mod factories;
 mod models;
 
+use models::derived::data_sets::DataSets;
 use models::typed::agency_id::AgencyId;
 use models::typed::dataflow_identifier::DataflowIdentifier;
 use models::typed::datakey::DataKey;
+use models::typed::date_granularity::DateGranularity;
+use models::typed::detail::Detail;
+use models::typed::dimension_at_observation::DimensionAtObservation;
 use models::typed::meta_detail::MetaDetail;
 use models::typed::sdmx_client::SdmxClient;
 use models::typed::structure_type::StructureType;
@@ -27,12 +32,16 @@ pub async fn get_dataflows(agency_id: AgencyId) -> Result<Dataflows> {
 pub async fn get_data(
     dataflow_identifier: DataflowIdentifier,
     datakey: DataKey,
-) -> Result<Dataflows> {
+) -> Result<DataSets> {
     Ok(SdmxClient::new()
         .get()
-        .data(dataflow_identifier, datakey) // Should be strongly typed input params
+        .data(dataflow_identifier, datakey)
+        .start_period(DateGranularity::Year(2021))
+        .end_period(DateGranularity::Year(2023))
+        .detail(Detail::DataOnly)
+        .dimension_at_observation(DimensionAtObservation::All)
         .build()
-        .send::<Dataflows>()
+        .send::<DataSets>()
         .await?
         .data)
 }
@@ -43,7 +52,7 @@ mod tests {
     use semver::Version;
 
     use crate::{
-        builders::dataflow_identifier::DataflowIdentifierBuilder,
+        builders::{dataflow_identifier::DataflowIdentifierBuilder, datakey::DataKeyBuilder},
         models::typed::dataflow_id::DataflowId,
     };
 
@@ -59,28 +68,21 @@ mod tests {
 
     #[tokio::test]
     async fn get_dataflow_ids() -> Result<()> {
-        let response = crate::get_dataflows(AgencyId::Abs).await?;
-
-        println!("{:?}", response);
+        let _response = crate::get_dataflows(AgencyId::Abs).await?;
 
         Ok(())
     }
 
     #[tokio::test]
     async fn data() -> Result<()> {
-        init_logger();
-
-        let key = DataKey::no_filter();
-        let id = DataflowId::Cpi;
-
-        let identifier = DataflowIdentifierBuilder::new(id)
+        let identifier = DataflowIdentifierBuilder::new(DataflowId::Cpi)
             .agency_id(AgencyId::Abs)
             .version(Version::new(1, 0, 0))
             .build()?;
 
-        let response = crate::get_data(identifier, key).await?;
+        let key = DataKey::no_filter();
 
-        println!("{:?}", response);
+        let _response = crate::get_data(identifier, key).await?;
 
         Ok(())
     }

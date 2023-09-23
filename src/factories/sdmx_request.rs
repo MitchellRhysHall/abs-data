@@ -1,19 +1,24 @@
-use crate::models::typed::{
-    agency_id::AgencyId, dataflow_identifier::DataflowIdentifier, datakey::DataKey,
-    sdmx_client::SdmxClient, structure_type::StructureType,
+use crate::{
+    builders::{
+        sdmx_data_request::SdmxDataRequestBuilder, sdmx_meta_request::SdmxMetaRequestBuilder,
+    },
+    models::typed::{
+        agency_id::AgencyId, dataflow_identifier::DataflowIdentifier, datakey::DataKey,
+        sdmx_client::SdmxClient, structure_type::StructureType,
+    },
 };
 
-use super::{sdmx_data_request::SdmxDataRequestBuilder, sdmx_meta_request::SdmxMetaRequestBuilder};
+use super::request_header::RequestHeaderFactory;
 
-pub struct SdmxRequestBuilder<'a> {
+pub struct SdmxRequestBuilderFactory<'a> {
     client: &'a SdmxClient,
     base_url: &'a str,
     key: Option<&'a str>,
 }
 
-impl<'a> SdmxRequestBuilder<'a> {
+impl<'a> SdmxRequestBuilderFactory<'a> {
     pub fn new(client: &'a SdmxClient) -> Self {
-        SdmxRequestBuilder {
+        Self {
             client,
             base_url: "https://api.data.abs.gov.au",
             key: None,
@@ -37,6 +42,10 @@ impl<'a> SdmxRequestBuilder<'a> {
             dataflow_identifier,
             data_key,
             self.key,
+            &[
+                RequestHeaderFactory::USER_AGENT_ANONYMOUS,
+                RequestHeaderFactory::ACCEPT_DATA_JSON,
+            ],
         )
     }
 
@@ -51,6 +60,10 @@ impl<'a> SdmxRequestBuilder<'a> {
             structure_type,
             agency_id,
             self.key,
+            &[
+                RequestHeaderFactory::USER_AGENT_ANONYMOUS,
+                RequestHeaderFactory::ACCEPT_STRUCTURE_JSON,
+            ],
         )
     }
 }

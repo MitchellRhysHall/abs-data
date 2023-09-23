@@ -1,10 +1,11 @@
 use serde::{Deserialize, Serialize};
 
-use super::meta::Meta;
+use super::names::Names;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct SdmxResponse<T> {
-    pub data: T,
-    pub meta: Meta,
+pub struct Sender {
+    pub id: Box<str>,
+    pub name: Option<Box<str>>,
+    pub names: Option<Names>,
 }

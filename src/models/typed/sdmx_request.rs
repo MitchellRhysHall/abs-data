@@ -12,11 +12,22 @@ pub struct SdmxRequest<'a> {
     client: &'a SdmxClient,
     url: Url,
     key: Option<&'a str>,
+    headers: &'a [(&'a str, &'a str)],
 }
 
 impl<'a> SdmxRequest<'a> {
-    pub fn new(client: &'a SdmxClient, url: Url, key: Option<&'a str>) -> Self {
-        Self { client, url, key }
+    pub fn new(
+        client: &'a SdmxClient,
+        url: Url,
+        key: Option<&'a str>,
+        headers: &'a [(&'a str, &'a str)],
+    ) -> Self {
+        Self {
+            client,
+            url,
+            key,
+            headers,
+        }
     }
 
     pub async fn send<T>(&self) -> Result<SdmxResponse<T>>
@@ -25,12 +36,11 @@ impl<'a> SdmxRequest<'a> {
     {
         info!("{:?}", self.url.as_ref());
 
-        let mut request = self
-            .client
-            .inner()
-            .get(self.url.as_ref())
-            .header(header::USER_AGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
-            .header(header::ACCEPT, "application/vnd.sdmx.structure+json");
+        let mut request = self.client.inner().get(self.url.as_ref());
+
+        for header in self.headers {
+            request = request.header(header.0, header.1)
+        }
 
         if let Some(key) = &self.key {
             request = request.header("x-api-key", *key);

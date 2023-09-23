@@ -16,6 +16,7 @@ pub struct SdmxMetaRequestBuilder<'a> {
     structure_version: Option<&'a str>,
     references: Option<Reference<'a>>,
     key: Option<&'a str>,
+    headers: &'a [(&'a str, &'a str)],
 }
 
 impl<'a> SdmxMetaRequestBuilder<'a> {
@@ -25,6 +26,7 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
         structure_type: &'a StructureType,
         agency_id: &'a AgencyId,
         key: Option<&'a str>,
+        headers: &'a [(&'a str, &'a str)],
     ) -> Self {
         Self {
             client,
@@ -36,6 +38,7 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
             structure_version: None,
             references: None,
             key,
+            headers,
         }
     }
 
@@ -82,6 +85,6 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
 
         let url = url_builder.build().expect("Failed to build url");
 
-        SdmxRequest::new(self.client, url, self.key)
+        SdmxRequest::new(self.client, url, self.key, self.headers)
     }
 }

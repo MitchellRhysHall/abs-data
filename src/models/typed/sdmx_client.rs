@@ -1,6 +1,6 @@
 use std::{cell::OnceCell, sync::OnceLock};
 
-use crate::builders::sdmx_request::SdmxRequestBuilder;
+use crate::factories::sdmx_request::SdmxRequestBuilderFactory;
 
 static CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
 
@@ -16,8 +16,8 @@ impl SdmxClient {
         }
     }
 
-    pub fn get(&self) -> SdmxRequestBuilder {
-        SdmxRequestBuilder::new(&self)
+    pub fn get(&self) -> SdmxRequestBuilderFactory {
+        SdmxRequestBuilderFactory::new(&self)
     }
 
     pub fn inner(&self) -> &reqwest::Client {

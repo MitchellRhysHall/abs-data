@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::sdmx_response::Names;
+use super::{data_structure_components::DataStructureComponents, link::Link, names::Names};
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -22,14 +22,3 @@ pub struct DataStructure {
     pub names: Names,
     pub data_structure_components: DataStructureComponents,
 }
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Link {
-    pub href: Box<str>,
-    pub rel: Box<str>,
-}
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct DataStructureComponents {}

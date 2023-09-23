@@ -14,6 +14,14 @@ pub struct DataKey {
 }
 
 impl DataKey {
+    fn new(str: &str) -> Self {
+        Self { inner: str.into() }
+    }
+
+    pub fn parse(str: &str) -> Result<Self> {
+        Self::try_from(str)
+    }
+
     pub fn builder() -> DataKeyBuilder {
         DataKeyBuilder::new()
     }
@@ -76,6 +84,24 @@ impl TryFrom<DataKeyDimensions<'_>> for DataKey {
         if format!("{}", key).len() > MAX_LENGTH {
             return Err(ErrorCode::DataKeyLengthExceeded(MAX_LENGTH));
         };
+
+        Ok(key)
+    }
+}
+
+impl TryFrom<&str> for DataKey {
+    type Error = ErrorCode;
+
+    fn try_from(str: &str) -> Result<Self> {
+        let items: Box<[&str]> = str.split(".").collect();
+
+        for item in items.iter() {
+            if item.parse::<u8>().is_err() {
+                return Err(ErrorCode::DataKeyContainsNonNumber((*item).into()));
+            }
+        }
+
+        let key = DataKey::new(str);
 
         Ok(key)
     }
