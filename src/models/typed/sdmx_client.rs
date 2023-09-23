@@ -1,6 +1,6 @@
 use std::{cell::OnceCell, sync::OnceLock};
 
-use super::request::SdmxRequestBuilder;
+use crate::builders::sdmx_request::SdmxRequestBuilder;
 
 static CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
 

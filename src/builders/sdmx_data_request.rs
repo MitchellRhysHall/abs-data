@@ -1,19 +1,21 @@
 use log::info;
-use url::Url;
 
 use crate::{
-    error_code::{ErrorCode, Result},
-    models::typed::enums::{DateGranularity, Detail, DimensionAtObservation},
+    builders::url::UrlBuilder,
+    models::typed::{
+        dataflow_identifier::DataflowIdentifier, datakey::DataKey,
+        date_granularity::DateGranularity, detail::Detail,
+        dimension_at_observation::DimensionAtObservation, sdmx_client::SdmxClient,
+        sdmx_request::SdmxRequest,
+    },
 };
-
-use super::{client::SdmxClient, request::SdmxRequest};
 
 pub struct SdmxDataRequestBuilder<'a> {
     client: &'a SdmxClient,
     base_url: &'a str,
     path: &'a str,
-    dataflow_id: &'a str,
-    data_key: &'a str,
+    dataflow_identifier: DataflowIdentifier,
+    data_key: DataKey,
     start_period: Option<DateGranularity<'a>>,
     end_period: Option<DateGranularity<'a>>,
     detail: Option<Detail>,
@@ -26,15 +28,15 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         client: &'a SdmxClient,
         base_url: &'a str,
         path: &'a str,
-        dataflow_id: &'a str,
-        data_key: &'a str,
+        dataflow_identifier: DataflowIdentifier,
+        data_key: DataKey,
         key: Option<&'a str>,
     ) -> Self {
         Self {
             client,
             base_url,
             path,
-            dataflow_id,
+            dataflow_identifier,
             data_key,
             start_period: None,
             end_period: None,
@@ -67,45 +69,31 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         self
     }
 
-    fn build_url(&self) -> Result<Url> {
-        let mut url = Url::parse(self.base_url)?;
-
-        url.path_segments_mut()
-            .map_err(|_| ErrorCode::UrlCannotBeABase)?
-            .extend(&[self.path, self.dataflow_id, self.data_key]);
-
-        let mut query_string = Vec::new();
+    pub fn build(&self) -> SdmxRequest {
+        let mut url_builder = UrlBuilder::new(self.base_url)
+            .add_path_segment(self.path)
+            .add_path_segment(format!("{}", self.dataflow_identifier))
+            .add_path_segment(format!("{}", self.data_key));
 
         if let Some(start_period) = &self.start_period {
-            query_string.push(format!("start_period={}", start_period.to_string()));
+            url_builder = url_builder.add_query_param("start_period", start_period.to_string());
         }
         if let Some(end_period) = &self.end_period {
-            query_string.push(format!("end_period={}", end_period.to_string()));
+            url_builder = url_builder.add_query_param("end_period", end_period.to_string());
         }
         if let Some(detail) = &self.detail {
-            query_string.push(format!("detail={}", detail.to_string()));
+            url_builder = url_builder.add_query_param("detail", detail.to_string());
         }
         if let Some(dimension_at_observation) = &self.dimension_at_observation {
-            query_string.push(format!(
-                "dimensionAtObservation={}",
-                dimension_at_observation.to_string()
-            ));
+            url_builder = url_builder.add_query_param(
+                "dimensionAtObservation",
+                dimension_at_observation.to_string(),
+            );
         }
 
-        if !query_string.is_empty() {
-            let query_string = query_string.join("&");
-            url.set_query(Some(&query_string));
-        }
-
+        let url = url_builder.build().expect("Failed to build url");
         info!("{}", url);
 
-        Ok(url)
-    }
-
-    pub fn build(&self) -> SdmxRequest {
-        let url = self
-            .build_url()
-            .expect("Failed to build the URL; this should never happen");
         SdmxRequest::new(self.client, url, self.key)
     }
 }

@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::models::typed::dataflow_id::DataflowId;
+
 use super::sdmx_response::{Annotation, Descriptions, Names};
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -11,7 +13,7 @@ pub struct Dataflows {
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Dataflow {
-    pub id: Box<str>,
+    pub id: DataflowId,
     pub version: Box<str>,
     #[serde(rename = "agencyID")]
     pub agency_id: Box<str>,

@@ -1,43 +1,16 @@
 use crate::{
-    error_code::{ErrorCode, Result},
-    models::typed::enums::{Frequency, Measure, Region},
+    error_code::Result,
+    models::typed::{
+        datakey::DataKey, datakey_dimensions::DataKeyDimensions, frequency::Frequency,
+        measure::Measure, region::Region,
+    },
 };
-use core::fmt;
-use std::fmt::{Display, Formatter};
-
-pub struct DataKey {
-    measure: Vec<Measure>,
-    region: Vec<Region>,
-    frequency: Vec<Frequency>,
-    as_str: Box<str>,
-}
-
-impl DataKey {
-    fn format_dimension<T: Display>(items: &[T]) -> String {
-        items
-            .iter()
-            .map(|item| format!("{}", item))
-            .collect::<Vec<String>>()
-            .join("+")
-    }
-}
-
-impl Display for DataKey {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.as_str)
-    }
-}
-
-impl AsRef<str> for DataKey {
-    fn as_ref(&self) -> &str {
-        &self.as_str
-    }
-}
 
 pub struct DataKeyBuilder {
     measure: Vec<Measure>,
     region: Vec<Region>,
     frequency: Vec<Frequency>,
+    no_filter: bool,
     max_length: usize,
 }
 
@@ -47,6 +20,7 @@ impl DataKeyBuilder {
             measure: Vec::new(),
             region: Vec::new(),
             frequency: Vec::new(),
+            no_filter: false,
             max_length: 260,
         }
     }
@@ -55,38 +29,29 @@ impl DataKeyBuilder {
         self.max_length
     }
 
-    pub fn add_measure(mut self, measure: Measure) -> Self {
+    pub fn measure(mut self, measure: Measure) -> Self {
         self.measure.push(measure);
         self
     }
 
-    pub fn add_region(mut self, region: Region) -> Self {
+    pub fn region(mut self, region: Region) -> Self {
         self.region.push(region);
         self
     }
 
-    pub fn add_frequency(mut self, frequency: Frequency) -> Self {
+    pub fn frequency(mut self, frequency: Frequency) -> Self {
         self.frequency.push(frequency);
         self
     }
 
     pub fn build(self) -> Result<DataKey> {
-        let measure_str = DataKey::format_dimension(&self.measure);
-        let region_str = DataKey::format_dimension(&self.region);
-        let frequency_str = DataKey::format_dimension(&self.frequency);
-
-        let dimensions = vec![measure_str, region_str, frequency_str].join(".");
-
-        let key = DataKey {
-            measure: self.measure,
-            region: self.region,
-            frequency: self.frequency,
-            as_str: dimensions.into(),
+        let dimensions = DataKeyDimensions {
+            measure: &self.measure,
+            region: &self.region,
+            frequency: &self.frequency,
         };
 
-        if format!("{}", key).len() > self.max_length {
-            return Err(ErrorCode::DataKeyLengthExceeded(self.max_length));
-        }
+        let key = DataKey::try_from(dimensions)?;
 
         Ok(key)
     }
@@ -98,18 +63,15 @@ mod tests {
 
     #[test]
     fn test_single_measure() {
-        let data_key = DataKeyBuilder::new()
-            .add_measure(Measure::M1)
-            .build()
-            .unwrap();
+        let data_key = DataKeyBuilder::new().measure(Measure::M1).build().unwrap();
         assert_eq!(format!("{}", data_key), "M1..");
     }
 
     #[test]
     fn test_multiple_measures() {
         let data_key = DataKeyBuilder::new()
-            .add_measure(Measure::M1)
-            .add_measure(Measure::M2)
+            .measure(Measure::M1)
+            .measure(Measure::M2)
             .build()
             .unwrap();
         assert_eq!(format!("{}", data_key), "M1+M2..");
@@ -118,8 +80,8 @@ mod tests {
     #[test]
     fn test_single_measure_single_region() {
         let data_key = DataKeyBuilder::new()
-            .add_measure(Measure::M1)
-            .add_region(Region::Aus)
+            .measure(Measure::M1)
+            .region(Region::Aus)
             .build()
             .unwrap();
         assert_eq!(format!("{}", data_key), "M1.AUS.");
@@ -128,9 +90,9 @@ mod tests {
     #[test]
     fn test_single_measure_multiple_region() {
         let data_key = DataKeyBuilder::new()
-            .add_measure(Measure::M1)
-            .add_region(Region::Aus)
-            .add_region(Region::Usa)
+            .measure(Measure::M1)
+            .region(Region::Aus)
+            .region(Region::Usa)
             .build()
             .unwrap();
         assert_eq!(format!("{}", data_key), "M1.AUS+USA.");
@@ -139,8 +101,8 @@ mod tests {
     #[test]
     fn test_single_measure_single_frequency() {
         let data_key = DataKeyBuilder::new()
-            .add_measure(Measure::M1)
-            .add_frequency(Frequency::Monthly)
+            .measure(Measure::M1)
+            .frequency(Frequency::Monthly)
             .build()
             .unwrap();
         assert_eq!(format!("{}", data_key), "M1..M");
@@ -151,7 +113,7 @@ mod tests {
         let mut datakey = DataKeyBuilder::new();
 
         for _ in 0..=datakey.max_length() {
-            datakey = datakey.add_frequency(Frequency::Quarterly);
+            datakey = datakey.frequency(Frequency::Quarterly);
         }
 
         assert!(datakey.build().is_err())

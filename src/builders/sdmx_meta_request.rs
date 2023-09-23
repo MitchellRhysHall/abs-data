@@ -1,11 +1,10 @@
-use url::Url;
-
 use crate::{
-    error_code::{ErrorCode, Result},
-    models::typed::enums::{AgencyId, MetaDetail, Reference, StructureType},
+    builders::url::UrlBuilder,
+    models::typed::{
+        agency_id::AgencyId, meta_detail::MetaDetail, reference::Reference,
+        sdmx_client::SdmxClient, sdmx_request::SdmxRequest, structure_type::StructureType,
+    },
 };
-
-use super::{client::SdmxClient, request::SdmxRequest};
 
 pub struct SdmxMetaRequestBuilder<'a> {
     client: &'a SdmxClient,
@@ -60,49 +59,28 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
         self
     }
 
-    fn build_url(&self) -> Result<Url> {
-        let mut url = Url::parse(self.base_url)?;
-
-        {
-            let mut path_segments = url
-                .path_segments_mut()
-                .map_err(|_| ErrorCode::UrlCannotBeABase)?;
-            path_segments.extend(&[
-                &self.structure_type.to_string(),
-                &self.agency_id.to_string(),
-            ]);
-
-            if let Some(structure_id) = self.structure_id {
-                path_segments.push(structure_id);
-
-                if let Some(structure_version) = self.structure_version {
-                    path_segments.push(structure_version);
-                }
-            }
-        }
-
-        {
-            let mut query_pairs = url.query_pairs_mut();
-
-            if let Some(detail) = &self.detail {
-                query_pairs.append_pair("detail", &detail.to_string());
-            }
-        }
-
-        {
-            let mut query_pairs = url.query_pairs_mut();
-            if let Some(references) = &self.references {
-                query_pairs.append_pair("references", &references.to_string());
-            }
-        }
-
-        Ok(url)
-    }
-
     pub fn build(&self) -> SdmxRequest {
-        let url = self
-            .build_url()
-            .expect("Failed to build the URL; this should never happen");
+        let mut url_builder = UrlBuilder::new(self.base_url)
+            .add_path_segment(self.structure_type.to_string())
+            .add_path_segment(self.agency_id.to_string());
+
+        if let Some(structure_id) = &self.structure_id {
+            url_builder = url_builder.add_path_segment(structure_id.to_string());
+
+            if let Some(structure_version) = &self.structure_version {
+                url_builder = url_builder.add_path_segment(structure_version.to_string());
+            }
+        }
+
+        if let Some(detail) = &self.detail {
+            url_builder = url_builder.add_query_param("detail", detail.to_string());
+        }
+
+        if let Some(references) = &self.references {
+            url_builder = url_builder.add_query_param("references", references.to_string());
+        }
+
+        let url = url_builder.build().expect("Failed to build url");
 
         SdmxRequest::new(self.client, url, self.key)
     }

@@ -1,5 +1,6 @@
-pub mod client;
-pub mod data_request;
+pub mod dataflow_identifier;
 pub mod datakey;
-pub mod meta_request;
-pub mod request;
+pub mod sdmx_data_request;
+pub mod sdmx_meta_request;
+pub mod sdmx_request;
+pub mod url;
