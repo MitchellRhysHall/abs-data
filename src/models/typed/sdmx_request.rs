@@ -1,5 +1,4 @@
 use log::info;
-use reqwest::header;
 use url::Url;
 
 use crate::{
@@ -9,21 +8,16 @@ use crate::{
 use super::sdmx_client::SdmxClient;
 
 pub struct SdmxRequest<'a> {
-    client: &'a SdmxClient,
+    client: SdmxClient,
     url: Url,
     key: Option<&'a str>,
     headers: &'a [(&'a str, &'a str)],
 }
 
 impl<'a> SdmxRequest<'a> {
-    pub fn new(
-        client: &'a SdmxClient,
-        url: Url,
-        key: Option<&'a str>,
-        headers: &'a [(&'a str, &'a str)],
-    ) -> Self {
+    pub fn new(url: Url, key: Option<&'a str>, headers: &'a [(&'a str, &'a str)]) -> Self {
         Self {
-            client,
+            client: SdmxClient::get_or_init(),
             url,
             key,
             headers,

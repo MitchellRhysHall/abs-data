@@ -2,16 +2,19 @@ use log::info;
 
 use crate::{
     builders::url::UrlBuilder,
-    models::typed::{
-        dataflow_identifier::DataflowIdentifier, datakey::DataKey,
-        date_granularity::DateGranularity, detail::Detail,
-        dimension_at_observation::DimensionAtObservation, sdmx_client::SdmxClient,
-        sdmx_request::SdmxRequest,
+    error_code::Result,
+    factories::{request_header::RequestHeaderFactory, url::UrlFactory},
+    models::{
+        derived::sdmx_response::SdmxResponse,
+        typed::{
+            dataflow_identifier::DataflowIdentifier, datakey::DataKey,
+            date_granularity::DateGranularity, detail::Detail,
+            dimension_at_observation::DimensionAtObservation, sdmx_request::SdmxRequest,
+        },
     },
 };
 
 pub struct SdmxDataRequestBuilder<'a> {
-    client: &'a SdmxClient,
     base_url: &'a str,
     path: &'a str,
     dataflow_identifier: DataflowIdentifier,
@@ -25,27 +28,21 @@ pub struct SdmxDataRequestBuilder<'a> {
 }
 
 impl<'a> SdmxDataRequestBuilder<'a> {
-    pub fn new(
-        client: &'a SdmxClient,
-        base_url: &'a str,
-        path: &'a str,
-        dataflow_identifier: DataflowIdentifier,
-        data_key: DataKey,
-        key: Option<&'a str>,
-        headers: &'a [(&'a str, &'a str)],
-    ) -> Self {
+    pub fn new(dataflow_identifier: DataflowIdentifier, data_key: DataKey) -> Self {
         Self {
-            client,
-            base_url,
-            path,
+            base_url: UrlFactory::BASE,
+            path: "data",
             dataflow_identifier,
             data_key,
             start_period: None,
             end_period: None,
             detail: None,
             dimension_at_observation: None,
-            key,
-            headers,
+            key: None,
+            headers: &[
+                RequestHeaderFactory::USER_AGENT_ANONYMOUS,
+                RequestHeaderFactory::ACCEPT_DATA_JSON,
+            ],
         }
     }
 
@@ -72,7 +69,12 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         self
     }
 
-    pub fn build(&self) -> SdmxRequest {
+    pub fn key(mut self, key: &'a str) -> Self {
+        self.key = Some(key);
+        self
+    }
+
+    fn build(&self) -> SdmxRequest {
         let mut url_builder = UrlBuilder::new(self.base_url)
             .add_path_segment(self.path)
             .add_path_segment(format!("{}", self.dataflow_identifier))
@@ -97,6 +99,13 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         let url = url_builder.build().expect("Failed to build url");
         info!("{}", url);
 
-        SdmxRequest::new(self.client, url, self.key, self.headers)
+        SdmxRequest::new(url, self.key, self.headers)
+    }
+
+    pub async fn send<T>(&self) -> Result<SdmxResponse<T>>
+    where
+        T: serde::de::DeserializeOwned,
+    {
+        self.build().send::<T>().await
     }
 }

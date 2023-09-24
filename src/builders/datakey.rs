@@ -10,7 +10,6 @@ pub struct DataKeyBuilder {
     measure: Vec<Measure>,
     region: Vec<Region>,
     frequency: Vec<Frequency>,
-    no_filter: bool,
     max_length: usize,
 }
 
@@ -20,7 +19,6 @@ impl DataKeyBuilder {
             measure: Vec::new(),
             region: Vec::new(),
             frequency: Vec::new(),
-            no_filter: false,
             max_length: 260,
         }
     }

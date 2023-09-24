@@ -16,5 +16,5 @@ pub struct DataSet {
     pub action: Box<str>,
     pub links: Box<[Link]>,
     pub annotations: Vec<i64>,
-    pub observations: HashMap<Box<str>, Box<[Option<f64>]>>,
+    pub observations: Option<HashMap<Box<str>, Box<[Option<f64>]>>>,
 }

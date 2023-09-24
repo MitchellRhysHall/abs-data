@@ -7,7 +7,7 @@ pub enum AgencyId {
 impl Display for AgencyId {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
-            AgencyId::Abs => write!(f, "ABS"),
+            Self::Abs => write!(f, "ABS"),
         }
     }
 }
