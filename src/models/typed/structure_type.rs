@@ -1,5 +1,7 @@
 use std::fmt::{self, Display, Formatter};
 
+use crate::{models::derived::sdmx_response::SdmxResponse, traits::SdmxResponseType::ResponseType};
+
 pub enum StructureType {
     DataFlow,
     DataStructure,

@@ -5,7 +5,7 @@ use crate::{
     error_code::Result,
     factories::{request_header::RequestHeaderFactory, url::UrlFactory},
     models::{
-        derived::sdmx_response::SdmxResponse,
+        derived::{data_sets::DataSets, sdmx_response::SdmxResponse},
         typed::{
             dataflow_identifier::DataflowIdentifier, datakey::DataKey,
             date_granularity::DateGranularity, detail::Detail,
@@ -102,10 +102,75 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         SdmxRequest::new(url, self.key, self.headers)
     }
 
-    pub async fn send<T>(&self) -> Result<SdmxResponse<T>>
-    where
-        T: serde::de::DeserializeOwned,
-    {
-        self.build().send::<T>().await
+    pub async fn send(&self) -> Result<SdmxResponse<DataSets>> {
+        self.build().send::<DataSets>().await
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{
+        builders::dataflow_identifier::DataflowIdentifierBuilder,
+        models::typed::dataflow_id::DataflowId,
+    };
+
+    #[tokio::test]
+    async fn send_request_with_default_detail() -> Result<()> {
+        let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::Cpi).build()?;
+        let datakey = DataKey::default();
+        let _response = SdmxDataRequestBuilder::new(dataflow_identifier, datakey)
+            .send()
+            .await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn send_request_with_full_detail() -> Result<()> {
+        let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::Cpi).build()?;
+        let datakey = DataKey::default();
+        let _response = SdmxDataRequestBuilder::new(dataflow_identifier, datakey)
+            .detail(Detail::Full)
+            .send()
+            .await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn send_request_with_data_only_detail() -> Result<()> {
+        let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::Cpi).build()?;
+        let datakey = DataKey::default();
+        let _response = SdmxDataRequestBuilder::new(dataflow_identifier, datakey)
+            .detail(Detail::DataOnly)
+            .send()
+            .await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn send_request_with_no_data_detail() -> Result<()> {
+        let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::Cpi).build()?;
+        let datakey = DataKey::default();
+        let _response = SdmxDataRequestBuilder::new(dataflow_identifier, datakey)
+            .detail(Detail::NoData)
+            .send()
+            .await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn send_request_with_series_keys_only_detail() -> Result<()> {
+        let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::Cpi).build()?;
+        let datakey = DataKey::default();
+        let _response = SdmxDataRequestBuilder::new(dataflow_identifier, datakey)
+            .detail(Detail::SeriesKeysOnly)
+            .send()
+            .await?;
+
+        Ok(())
     }
 }

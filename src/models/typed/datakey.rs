@@ -118,3 +118,9 @@ impl AsRef<str> for DataKey {
         &self.inner
     }
 }
+
+impl Default for DataKey {
+    fn default() -> Self {
+        Self::no_filter()
+    }
+}

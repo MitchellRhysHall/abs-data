@@ -1,6 +1,11 @@
 use serde::{Deserialize, Serialize};
 
-use super::{data_structure_components::DataStructureComponents, link::Link, names::Names};
+use crate::traits::SdmxResponseType::ResponseType;
+
+use super::{
+    data_structure_components::DataStructureComponents, link::Link, names::Names,
+    sdmx_response::SdmxResponse,
+};
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -21,4 +26,8 @@ pub struct DataStructure {
     pub name: Box<str>,
     pub names: Names,
     pub data_structure_components: DataStructureComponents,
+}
+
+impl ResponseType for DataStructures {
+    type Response = SdmxResponse<DataStructures>;
 }

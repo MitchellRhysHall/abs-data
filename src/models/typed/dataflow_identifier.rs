@@ -47,12 +47,16 @@ impl TryFrom<DataflowIdentifierDimensions<'_>> for DataflowIdentifier {
 
         if let Some(agency_id) = dimensions.agency_id {
             dimensions_vec.push(agency_id.to_string());
+        } else {
+            dimensions_vec.push("ABS".to_string());
         }
 
         dimensions_vec.push(dimensions.dataflow_id.to_string());
 
         if let Some(version) = dimensions.version {
             dimensions_vec.push(version.to_string());
+        } else {
+            dimensions_vec.push("1.0.0".to_string());
         }
 
         let inner = dimensions_vec.join(",");

@@ -1,3 +1,5 @@
+use std::marker::PhantomData;
+
 use crate::{
     builders::url::UrlBuilder,
     error_code::Result,
@@ -9,21 +11,23 @@ use crate::{
             sdmx_request::SdmxRequest, structure_type::StructureType,
         },
     },
+    traits::SdmxResponseType::ResponseType,
 };
 
-pub struct SdmxMetaRequestBuilder<'a> {
+pub struct SdmxMetaRequestBuilder<'a, T: ResponseType> {
     base_url: &'a str,
     structure_type: &'a StructureType,
     agency_id: &'a AgencyId,
-    detail: Option<MetaDetail>,
+    detail: Option<&'a MetaDetail>,
     structure_id: Option<&'a str>,
     structure_version: Option<&'a str>,
     references: Option<Reference<'a>>,
     key: Option<&'a str>,
     headers: &'a [(&'a str, &'a str)],
+    phantom: PhantomData<T>,
 }
 
-impl<'a> SdmxMetaRequestBuilder<'a> {
+impl<'a, T: ResponseType> SdmxMetaRequestBuilder<'a, T> {
     pub fn new(structure_type: &'a StructureType, agency_id: &'a AgencyId) -> Self {
         Self {
             base_url: UrlFactory::BASE,
@@ -38,10 +42,11 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
                 RequestHeaderFactory::USER_AGENT_ANONYMOUS,
                 RequestHeaderFactory::ACCEPT_STRUCTURE_JSON,
             ],
+            phantom: PhantomData,
         }
     }
 
-    pub fn detail(mut self, detail: MetaDetail) -> Self {
+    pub fn detail(mut self, detail: &'a MetaDetail) -> Self {
         self.detail = Some(detail);
         self
     }
@@ -92,9 +97,9 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
         SdmxRequest::new(url, self.key, self.headers)
     }
 
-    pub async fn send<T>(&self) -> Result<SdmxResponse<T>>
+    pub async fn send(&self) -> Result<SdmxResponse<T>>
     where
-        T: serde::de::DeserializeOwned,
+        T: ResponseType + serde::de::DeserializeOwned,
     {
         self.build().send::<T>().await
     }

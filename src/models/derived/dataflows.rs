@@ -1,8 +1,11 @@
 use serde::{Deserialize, Serialize};
 
-use crate::models::typed::dataflow_id::DataflowId;
+use crate::{models::typed::dataflow_id::DataflowId, traits::SdmxResponseType::ResponseType};
 
-use super::{annotation::Annotation, descriptions::Descriptions, names::Names};
+use super::{
+    annotation::Annotation, data_structures::DataStructure, descriptions::Descriptions,
+    names::Names, sdmx_response::SdmxResponse,
+};
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -24,4 +27,8 @@ pub struct Dataflow {
     pub descriptions: Option<Descriptions>,
     pub annotations: Option<Vec<Annotation>>,
     pub structure: Option<Box<str>>,
+}
+
+impl ResponseType for Dataflows {
+    type Response = SdmxResponse<Dataflows>;
 }
