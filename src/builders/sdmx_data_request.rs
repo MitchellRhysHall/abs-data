@@ -2,7 +2,7 @@ use log::info;
 
 use crate::{
     builders::url::UrlBuilder,
-    config::Config,
+    config::{self, Config},
     error_code::Result,
     models::{
         derived::{data_sets::DataSets, sdmx_response::SdmxResponse},
@@ -31,7 +31,7 @@ impl<'a> SdmxDataRequestBuilder<'a> {
     pub fn new(dataflow_identifier: &'a DataflowIdentifier) -> Self {
         Self {
             base_url: Config::BASE_URL,
-            path: "data",
+            path: Config::DATA_PATH,
             dataflow_identifier,
             data_key: None,
             start_period: None,
@@ -88,17 +88,19 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         }
 
         if let Some(start_period) = &self.start_period {
-            url_builder = url_builder.add_query_param("startPeriod", start_period.to_string());
+            url_builder =
+                url_builder.add_query_param(Config::QUERY_START_PERIOD, start_period.to_string());
         }
         if let Some(end_period) = &self.end_period {
-            url_builder = url_builder.add_query_param("endPeriod", end_period.to_string());
+            url_builder =
+                url_builder.add_query_param(Config::QUERY_END_PERIOD, end_period.to_string());
         }
         if let Some(detail) = &self.detail {
-            url_builder = url_builder.add_query_param("detail", detail.to_string());
+            url_builder = url_builder.add_query_param(Config::QUERY_DETAIL, detail.to_string());
         }
         if let Some(dimension_at_observation) = &self.dimension_at_observation {
             url_builder = url_builder.add_query_param(
-                "dimensionAtObservation",
+                Config::QUERY_DIMENSION_AT_OBSERVATION,
                 dimension_at_observation.to_string(),
             );
         }

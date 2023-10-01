@@ -2,9 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::traits::url_path_segment::UrlPathSegment;
 
-use super::{
-    data_structure_components::DataStructureComponents, link::Link, names::Names,
-};
+use super::{data_structure_components::DataStructureComponents, link::Link, names::Names};
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -16,11 +14,11 @@ pub struct DataStructures {
 #[serde(rename_all = "camelCase")]
 pub struct DataStructure {
     pub id: Box<str>,
-    pub links: Box<[Link]>,
+    pub links: Option<Box<[Link]>>,
     pub version: Box<str>,
     #[serde(rename = "agencyID")]
     pub agency_id: Box<str>,
-    pub is_external_reference: bool,
+    pub is_external_reference: Option<bool>,
     pub is_final: bool,
     pub name: Box<str>,
     pub names: Names,

@@ -1,14 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    models::typed::{dataflow_id::DataflowId},
-    traits::url_path_segment::UrlPathSegment,
-};
+use crate::{models::typed::dataflow_id::DataflowId, traits::url_path_segment::UrlPathSegment};
 
-use super::{
-    annotation::Annotation, descriptions::Descriptions,
-    names::Names,
-};
+use super::{annotation::Annotation, descriptions::Descriptions, names::Names};
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]

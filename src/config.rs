@@ -2,8 +2,15 @@ pub(crate) struct Config;
 
 impl Config {
     pub(crate) const BASE_URL: &str = "https://api.data.abs.gov.au";
+    pub(crate) const DATA_PATH: &str = "data";
     pub(crate) const DATA_KEY_MAX_LENGTH: usize = 260;
     pub(crate) const DATA_KEY_REQUIRED_DOT_COUNT: usize = 4;
+
+    pub(crate) const QUERY_START_PERIOD: &str = "startPeriod";
+    pub(crate) const QUERY_END_PERIOD: &str = "endPeriod";
+    pub(crate) const QUERY_DETAIL: &str = "detail";
+    pub(crate) const QUERY_DIMENSION_AT_OBSERVATION: &str = "dimensionAtObservation";
+    pub(crate) const QUERY_REFERENCES: &str = "references";
 
     pub(crate) const MIME_TYPE_SDMX_STRUCTURE_JSON: &str = "application/vnd.sdmx.structure+json";
     pub(crate) const MIME_TYPE_SDMX_DATA_JSON: &str = "application/vnd.sdmx.data+json";

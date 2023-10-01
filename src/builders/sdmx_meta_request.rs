@@ -93,11 +93,12 @@ where
         }
 
         if let Some(detail) = &self.detail {
-            url_builder = url_builder.add_query_param("detail", detail.to_string());
+            url_builder = url_builder.add_query_param(Config::QUERY_DETAIL, detail.to_string());
         }
 
         if let Some(references) = &self.references {
-            url_builder = url_builder.add_query_param("references", references.to_string());
+            url_builder =
+                url_builder.add_query_param(Config::QUERY_REFERENCES, references.to_string());
         }
 
         let url = url_builder.build().expect("Failed to build url");
