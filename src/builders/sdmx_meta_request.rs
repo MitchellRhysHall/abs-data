@@ -1,26 +1,19 @@
-use std::marker::PhantomData;
-
-use serde::de::DeserializeOwned;
-
 use crate::{
     builders::url::UrlBuilder,
     config::Config,
     error_code::Result,
     models::{
-        derived::sdmx_response::SdmxResponse,
+        derived::{meta_data_sets::MetaDataSets, sdmx_response::SdmxResponse},
         typed::{
             agency_id::AgencyId, meta_detail::MetaDetail, reference::Reference,
-            sdmx_request::SdmxRequest,
+            sdmx_request::SdmxRequest, structure_type::StructureType,
         },
     },
-    traits::structure_type::StructureType,
 };
 
-pub struct SdmxMetaRequestBuilder<'a, T>
-where
-    T: StructureType,
-{
+pub struct SdmxMetaRequestBuilder<'a> {
     base_url: &'a str,
+    structure_type: &'a StructureType,
     agency_id: Option<&'a AgencyId>,
     detail: Option<&'a MetaDetail>,
     structure_id: Option<&'a str>,
@@ -28,16 +21,13 @@ where
     references: Option<Reference<'a>>,
     key: Option<&'a str>,
     headers: &'a [(&'a str, &'a str)],
-    phantom: PhantomData<T>,
 }
 
-impl<'a, T> SdmxMetaRequestBuilder<'a, T>
-where
-    T: StructureType,
-{
-    pub fn new() -> Self {
+impl<'a> SdmxMetaRequestBuilder<'a> {
+    pub fn new(structure_type: &'a StructureType) -> Self {
         Self {
             base_url: Config::BASE_URL,
+            structure_type,
             agency_id: None,
             detail: None,
             structure_id: None,
@@ -45,7 +35,6 @@ where
             references: None,
             key: None,
             headers: &[Config::USER_AGENT_ANONYMOUS, Config::ACCEPT_STRUCTURE_JSON],
-            phantom: PhantomData,
         }
     }
 
@@ -76,7 +65,7 @@ where
 
     fn build(&self) -> SdmxRequest {
         let mut url_builder =
-            UrlBuilder::new(self.base_url).add_path_segment(T::url_path_segment());
+            UrlBuilder::new(self.base_url).add_path_segment(self.structure_type.to_string());
 
         if let Some(agency_id) = &self.agency_id {
             url_builder = url_builder.add_path_segment(agency_id.to_string());
@@ -106,57 +95,18 @@ where
         SdmxRequest::new(url, self.key, self.headers)
     }
 
-    pub async fn send(&self) -> Result<SdmxResponse<T>> {
-        self.build().send::<T>().await
+    pub async fn send(&self) -> Result<SdmxResponse<MetaDataSets>> {
+        self.build().send::<MetaDataSets>().await
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::models::derived::{
-        category_schemes::CategorySchemes, codelist::Codelists, concept_schemes::ConceptSchemes,
-        data_structures::DataStructures, dataflows::Dataflows,
-    };
 
     #[tokio::test]
-    async fn send_request_for_dataflows() -> Result<()> {
-        let _response = SdmxMetaRequestBuilder::<Dataflows>::new().send().await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn send_request_for_data_structures() -> Result<()> {
-        let _response = SdmxMetaRequestBuilder::<DataStructures>::new()
-            .send()
-            .await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn send_request_for_codelists() -> Result<()> {
-        let _response = SdmxMetaRequestBuilder::<Codelists>::new()
-            .detail(&MetaDetail::AllStubs)
-            .send()
-            .await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn send_request_for_concept_schemes() -> Result<()> {
-        let _response = SdmxMetaRequestBuilder::<ConceptSchemes>::new()
-            .send()
-            .await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn send_request_for_category_schemes() -> Result<()> {
-        let _response = SdmxMetaRequestBuilder::<CategorySchemes>::new()
+    async fn send_request_all_structure_types() -> Result<()> {
+        let _response = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
             .send()
             .await?;
 

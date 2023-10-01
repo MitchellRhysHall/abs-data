@@ -1,16 +1,12 @@
 pub mod annotation;
 pub mod category;
-pub mod category_schemes;
-pub mod codelist;
 pub mod concept;
-pub mod concept_schemes;
 pub mod data_sets;
 pub mod data_structure_components;
-pub mod data_structures;
-pub mod dataflows;
 pub mod descriptions;
 pub mod link;
 pub mod meta;
+pub mod meta_data_sets;
 pub mod names;
 pub mod receiver;
 pub mod sdmx_response;

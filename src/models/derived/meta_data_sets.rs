@@ -1,18 +1,16 @@
+use std::collections::HashMap;
+
 use serde::{Deserialize, Serialize};
 
-use crate::traits::structure_type::StructureType;
-
-use super::{data_structure_components::DataStructureComponents, link::Link, names::Names};
+use super::{concept::Concept, descriptions::Descriptions, link::Link, names::Names};
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct DataStructures {
-    pub data_structures: Box<[DataStructure]>,
-}
+pub struct MetaDataSets(HashMap<Box<str>, Box<[MetaDataSet]>>);
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct DataStructure {
+pub struct MetaDataSet {
     pub id: Box<str>,
     pub links: Option<Box<[Link]>>,
     pub version: Box<str>,
@@ -22,11 +20,8 @@ pub struct DataStructure {
     pub is_final: bool,
     pub name: Box<str>,
     pub names: Names,
-    pub data_structure_components: DataStructureComponents,
-}
-
-impl StructureType for DataStructures {
-    fn url_path_segment() -> &'static str {
-        "datastructure"
-    }
+    pub is_partial: Option<bool>,
+    pub concepts: Option<Box<[Concept]>>,
+    pub description: Option<Box<str>>,
+    pub descriptions: Option<Descriptions>,
 }
