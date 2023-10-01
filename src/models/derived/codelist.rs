@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::traits::url_path_segment::UrlPathSegment;
+use crate::traits::structure_type::StructureType;
 
 use super::{link::Link, names::Names};
 
@@ -25,7 +25,7 @@ pub struct Codelist {
     pub is_partial: bool,
 }
 
-impl UrlPathSegment for Codelists {
+impl StructureType for Codelists {
     fn url_path_segment() -> &'static str {
         "codelist"
     }

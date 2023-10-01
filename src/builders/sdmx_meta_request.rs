@@ -13,12 +13,12 @@ use crate::{
             sdmx_request::SdmxRequest,
         },
     },
-    traits::url_path_segment::UrlPathSegment,
+    traits::structure_type::StructureType,
 };
 
 pub struct SdmxMetaRequestBuilder<'a, T>
 where
-    T: UrlPathSegment + DeserializeOwned,
+    T: StructureType,
 {
     base_url: &'a str,
     agency_id: Option<&'a AgencyId>,
@@ -33,7 +33,7 @@ where
 
 impl<'a, T> SdmxMetaRequestBuilder<'a, T>
 where
-    T: UrlPathSegment + DeserializeOwned,
+    T: StructureType,
 {
     pub fn new() -> Self {
         Self {

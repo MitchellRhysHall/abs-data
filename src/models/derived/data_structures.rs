@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::traits::url_path_segment::UrlPathSegment;
+use crate::traits::structure_type::StructureType;
 
 use super::{data_structure_components::DataStructureComponents, link::Link, names::Names};
 
@@ -25,7 +25,7 @@ pub struct DataStructure {
     pub data_structure_components: DataStructureComponents,
 }
 
-impl UrlPathSegment for DataStructures {
+impl StructureType for DataStructures {
     fn url_path_segment() -> &'static str {
         "datastructure"
     }

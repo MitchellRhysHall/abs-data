@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{models::typed::dataflow_id::DataflowId, traits::url_path_segment::UrlPathSegment};
+use crate::{models::typed::dataflow_id::DataflowId, traits::structure_type::StructureType};
 
 use super::{annotation::Annotation, descriptions::Descriptions, names::Names};
 
@@ -26,7 +26,7 @@ pub struct Dataflow {
     pub structure: Option<Box<str>>,
 }
 
-impl UrlPathSegment for Dataflows {
+impl StructureType for Dataflows {
     fn url_path_segment() -> &'static str {
         "dataflow"
     }

@@ -1,1 +1,1 @@
-pub mod url_path_segment;
+pub mod structure_type;

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::traits::url_path_segment::UrlPathSegment;
+use crate::traits::structure_type::StructureType;
 
 use super::{concept::Concept, descriptions::Descriptions, link::Link, names::Names};
 
@@ -28,7 +28,7 @@ pub struct ConceptScheme {
     pub descriptions: Option<Descriptions>,
 }
 
-impl UrlPathSegment for ConceptSchemes {
+impl StructureType for ConceptSchemes {
     fn url_path_segment() -> &'static str {
         "conceptscheme"
     }
