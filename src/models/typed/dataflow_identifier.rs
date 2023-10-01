@@ -1,12 +1,12 @@
 use std::fmt;
 
 use crate::{
-    builders::dataflow_identifier::DataflowIdentifierBuilder, error_code::ErrorCode,
+    error_code::ErrorCode,
     error_code::Result,
 };
 
 use super::{
-    dataflow_id::DataflowId, dataflow_identifier_dimensions::DataflowIdentifierDimensions,
+    dataflow_identifier_dimensions::DataflowIdentifierDimensions,
 };
 
 /// The dataflow identifier in {agencyId},{dataflowId},{version} format

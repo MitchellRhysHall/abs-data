@@ -1,6 +1,8 @@
 use std::fmt::{self, Display, Formatter};
 
+#[derive(Default)]
 pub enum AgencyId {
+    #[default]
     Abs,
 }
 
@@ -12,8 +14,4 @@ impl Display for AgencyId {
     }
 }
 
-impl Default for AgencyId {
-    fn default() -> Self {
-        AgencyId::Abs
-    }
-}
+

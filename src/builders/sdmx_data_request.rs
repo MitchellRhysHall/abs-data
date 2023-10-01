@@ -1,6 +1,6 @@
 use crate::{
     builders::url::UrlBuilder,
-    config::{self, Config},
+    config::Config,
     error_code::Result,
     models::{
         derived::{data_sets::DataSets, sdmx_response::SdmxResponse},
