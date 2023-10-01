@@ -103,12 +103,31 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use futures::future::join_all;
+    use strum::IntoEnumIterator;
 
     #[tokio::test]
     async fn send_request_all_structure_types() -> Result<()> {
-        let _response = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
-            .send()
-            .await?;
+        let futures: Vec<_> = StructureType::iter()
+            .map(|structure_type| async move {
+                let result = SdmxMetaRequestBuilder::new(&structure_type)
+                    .detail(&MetaDetail::AllStubs)
+                    .send()
+                    .await;
+                (structure_type, result)
+            })
+            .collect();
+
+        let results: Vec<_> = join_all(futures).await;
+
+        results.iter().for_each(|(structure_type, result)| {
+            assert!(
+                result.is_ok(),
+                "Failed for StructureType::{:?} with error: {:?}",
+                structure_type,
+                result.as_ref().err().unwrap()
+            )
+        });
 
         Ok(())
     }

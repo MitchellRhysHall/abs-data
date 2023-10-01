@@ -1,5 +1,3 @@
-use log::info;
-
 use crate::{
     builders::url::UrlBuilder,
     config::{self, Config},
@@ -106,7 +104,6 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         }
 
         let url = url_builder.build().expect("Failed to build url");
-        info!("{}", url);
 
         SdmxRequest::new(url, self.key, self.headers)
     }
@@ -118,6 +115,9 @@ impl<'a> SdmxDataRequestBuilder<'a> {
 
 #[cfg(test)]
 mod tests {
+    use futures::future::join_all;
+    use strum::IntoEnumIterator;
+
     use super::*;
     use crate::{
         builders::dataflow_identifier::DataflowIdentifierBuilder,
@@ -125,55 +125,29 @@ mod tests {
     };
 
     #[tokio::test]
-    async fn send_request_with_default_detail() -> Result<()> {
+    async fn send_request_with_all_details() -> Result<()> {
         let dataflow_identifier = DataflowIdentifierBuilder::new(&DataflowId::Cpi).build()?;
-        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
-            .send()
-            .await?;
 
-        Ok(())
-    }
+        let futures: Vec<_> = Detail::iter()
+            .map(|detail| async {
+                let result = SdmxDataRequestBuilder::new(&dataflow_identifier)
+                    .detail(&detail)
+                    .send()
+                    .await;
+                (detail, result)
+            })
+            .collect();
 
-    #[tokio::test]
-    async fn send_request_with_full_detail() -> Result<()> {
-        let dataflow_identifier = DataflowIdentifierBuilder::new(&DataflowId::Cpi).build()?;
-        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
-            .detail(&Detail::Full)
-            .send()
-            .await?;
+        let results: Vec<_> = join_all(futures).await;
 
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn send_request_with_data_only_detail() -> Result<()> {
-        let dataflow_identifier = DataflowIdentifierBuilder::new(&DataflowId::Cpi).build()?;
-        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
-            .detail(&Detail::DataOnly)
-            .send()
-            .await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn send_request_with_no_data_detail() -> Result<()> {
-        let dataflow_identifier = DataflowIdentifierBuilder::new(&DataflowId::Cpi).build()?;
-        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
-            .detail(&Detail::NoData)
-            .send()
-            .await?;
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn send_request_with_series_keys_only_detail() -> Result<()> {
-        let dataflow_identifier = DataflowIdentifierBuilder::new(&DataflowId::Cpi).build()?;
-        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
-            .detail(&Detail::SeriesKeysOnly)
-            .send()
-            .await?;
+        results.iter().for_each(|(detail, result)| {
+            assert!(
+                result.is_ok(),
+                "Failed for Detail::{:?} with error: {:?}",
+                detail,
+                result.as_ref().err().unwrap()
+            )
+        });
 
         Ok(())
     }

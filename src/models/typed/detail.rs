@@ -1,5 +1,8 @@
 use std::fmt::{self, Display, Formatter};
 
+use strum_macros::EnumIter;
+
+#[derive(Debug, Clone, EnumIter)]
 pub enum Detail {
     Full,
     DataOnly,

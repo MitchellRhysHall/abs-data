@@ -1,5 +1,8 @@
 use std::fmt::{self, Display, Formatter};
 
+use strum_macros::EnumIter;
+
+#[derive(Debug, Clone, EnumIter)]
 pub enum StructureType {
     DataFlow,
     DataStructure,
@@ -8,9 +11,9 @@ pub enum StructureType {
     CategoryScheme,
     ContentConstraint,
     ActualConstraint,
-    AgencyScheme,
+    // AgencyScheme, -- Currently returns 404 despite being listed in documentation
     Categorisation,
-    HierarchicalCodelist,
+    // HierarchicalCodelist, -- Currently returns 404 despite being listed in documentation
 }
 
 impl Display for StructureType {
@@ -23,9 +26,9 @@ impl Display for StructureType {
             Self::CategoryScheme => write!(f, "categoryscheme"),
             Self::ContentConstraint => write!(f, "contentconstraint"),
             Self::ActualConstraint => write!(f, "actualconstraint"),
-            Self::AgencyScheme => write!(f, "agencyscheme"),
+            // Self::AgencyScheme => write!(f, "agencyscheme"),
             Self::Categorisation => write!(f, "categorisation"),
-            Self::HierarchicalCodelist => write!(f, "hierarchicalcodelist"),
+            // Self::HierarchicalCodelist => write!(f, "hierarchicalcodelist"),
         }
     }
 }

@@ -1,4 +1,3 @@
-use log::info;
 use url::Url;
 
 use crate::{
@@ -29,8 +28,6 @@ impl<'a> SdmxRequest<'a> {
     where
         T: serde::de::DeserializeOwned,
     {
-        info!("{:?}", self.url.as_ref());
-
         let mut request = self.client.inner().get(self.url.as_ref());
 
         for header in self.headers {
@@ -54,8 +51,6 @@ impl<'a> SdmxRequest<'a> {
         if body_bytes.is_empty() {
             return Err(ErrorCode::HttpEmptyResponse);
         }
-
-        info!("{}", std::str::from_utf8(&body_bytes.clone())?);
 
         let data: SdmxResponse<T> = serde_json::from_slice(&body_bytes)?;
 
