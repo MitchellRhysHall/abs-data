@@ -30,6 +30,6 @@ pub struct DataStructure {
 
 impl UrlPathSegment for DataStructures {
     fn url_path_segment() -> &'static str {
-        "datastructures"
+        "datastructure"
     }
 }

@@ -1,13 +1,11 @@
 use crate::{
     builders::datakey::DataKeyBuilder,
+    config::Config,
     error_code::{ErrorCode, Result},
 };
 use std::fmt::{self, Display, Formatter};
 
 use super::datakey_dimensions::DataKeyDimensions;
-
-const MAX_LENGTH: usize = 260;
-const REQUIRED_DOT_COUNT: usize = 4;
 
 pub struct DataKey {
     inner: Box<str>,
@@ -73,7 +71,7 @@ impl TryFrom<DataKeyDimensions<'_>> for DataKey {
 
         let dot_count = dimensions_str.matches('.').count();
 
-        if dot_count < REQUIRED_DOT_COUNT {
+        if dot_count < Config::DATA_KEY_REQUIRED_DOT_COUNT {
             dimensions_str.push_str(&".".repeat(4 - dot_count));
         }
 
@@ -81,8 +79,10 @@ impl TryFrom<DataKeyDimensions<'_>> for DataKey {
             inner: dimensions_str.into(),
         };
 
-        if format!("{}", key).len() > MAX_LENGTH {
-            return Err(ErrorCode::DataKeyLengthExceeded(MAX_LENGTH));
+        let byte_len = format!("{}", key).len();
+
+        if byte_len > Config::DATA_KEY_MAX_LENGTH {
+            return Err(ErrorCode::DataKeyLengthExceeded(byte_len));
         };
 
         Ok(key)

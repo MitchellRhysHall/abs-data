@@ -34,6 +34,6 @@ pub struct Dataflow {
 
 impl UrlPathSegment for Dataflows {
     fn url_path_segment() -> &'static str {
-        "dataflows"
+        "dataflow"
     }
 }
