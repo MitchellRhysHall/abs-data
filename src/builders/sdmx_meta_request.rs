@@ -21,7 +21,7 @@ where
     T: UrlPathSegment + DeserializeOwned,
 {
     base_url: &'a str,
-    agency_id: &'a AgencyId,
+    agency_id: Option<&'a AgencyId>,
     detail: Option<&'a MetaDetail>,
     structure_id: Option<&'a str>,
     structure_version: Option<&'a str>,
@@ -35,10 +35,10 @@ impl<'a, T> SdmxMetaRequestBuilder<'a, T>
 where
     T: UrlPathSegment + DeserializeOwned,
 {
-    pub fn new(agency_id: &'a AgencyId) -> Self {
+    pub fn new() -> Self {
         Self {
             base_url: Config::BASE_URL,
-            agency_id,
+            agency_id: None,
             detail: None,
             structure_id: None,
             structure_version: None,
@@ -75,9 +75,14 @@ where
     }
 
     fn build(&self) -> SdmxRequest {
-        let mut url_builder = UrlBuilder::new(self.base_url)
-            .add_path_segment(T::url_path_segment())
-            .add_path_segment(self.agency_id.to_string());
+        let mut url_builder =
+            UrlBuilder::new(self.base_url).add_path_segment(T::url_path_segment());
+
+        if let Some(agency_id) = &self.agency_id {
+            url_builder = url_builder.add_path_segment(agency_id.to_string());
+        } else {
+            url_builder = url_builder.add_path_segment(AgencyId::default().to_string());
+        }
 
         if let Some(structure_id) = &self.structure_id {
             url_builder = url_builder.add_path_segment(structure_id.to_string());
@@ -108,15 +113,21 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{
-        models::{
-            derived::{data_structures::DataStructures, dataflows::Dataflows},
-        },
+    use crate::models::derived::{
+        codelist::Codelists, concept_scheme::ConceptSchemes, data_structures::DataStructures,
+        dataflows::Dataflows,
     };
 
     #[tokio::test]
     async fn send_request_for_dataflows() -> Result<()> {
-        let _response = SdmxMetaRequestBuilder::<Dataflows>::new(&AgencyId::Abs)
+        let _response = SdmxMetaRequestBuilder::<Dataflows>::new().send().await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn send_request_for_data_structures() -> Result<()> {
+        let _response = SdmxMetaRequestBuilder::<DataStructures>::new()
             .send()
             .await?;
 
@@ -124,8 +135,18 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn send_request_for_data_structures() -> Result<()> {
-        let _response = SdmxMetaRequestBuilder::<DataStructures>::new(&AgencyId::Abs)
+    async fn send_request_for_codelists() -> Result<()> {
+        let _response = SdmxMetaRequestBuilder::<Codelists>::new()
+            .detail(&MetaDetail::AllStubs)
+            .send()
+            .await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn send_request_for_concept_schemes() -> Result<()> {
+        let _response = SdmxMetaRequestBuilder::<ConceptSchemes>::new()
             .send()
             .await?;
 

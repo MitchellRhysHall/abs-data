@@ -1,7 +1,7 @@
 use std::fmt::{self, Display, Formatter};
 
 pub enum MetaDetail {
-    All,
+    AllStubs,
     Reference,
     ReferencePartial,
     AllComplete,
@@ -12,7 +12,7 @@ pub enum MetaDetail {
 impl Display for MetaDetail {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
-            Self::All => write!(f, "allstubs"),
+            Self::AllStubs => write!(f, "allstubs"),
             Self::Reference => write!(f, "referencestubs"),
             Self::ReferencePartial => write!(f, "referencepartial"),
             Self::AllComplete => write!(f, "allcompletestubs"),

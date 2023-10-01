@@ -11,3 +11,9 @@ impl Display for AgencyId {
         }
     }
 }
+
+impl Default for AgencyId {
+    fn default() -> Self {
+        AgencyId::Abs
+    }
+}

@@ -10,6 +10,7 @@ impl Config {
 
     pub(crate) const HEADER_ACCEPT_KEY: &str = "Accept";
     pub(crate) const HEADER_USER_AGENT_KEY: &str = "User-Agent";
+    pub(crate) const HEADER_API_KEY: &str = "x-api-key";
     pub(crate) const HEADER_USER_AGENT_VALUE: &str = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36";
 
     pub(crate) const USER_AGENT_ANONYMOUS: (&str, &str) =

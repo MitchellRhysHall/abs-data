@@ -2,7 +2,8 @@ use log::info;
 use url::Url;
 
 use crate::{
-    error_code::ErrorCode, error_code::Result, models::derived::sdmx_response::SdmxResponse,
+    config::Config, error_code::ErrorCode, error_code::Result,
+    models::derived::sdmx_response::SdmxResponse,
 };
 
 use super::sdmx_client::SdmxClient;
@@ -37,7 +38,7 @@ impl<'a> SdmxRequest<'a> {
         }
 
         if let Some(key) = &self.key {
-            request = request.header("x-api-key", *key);
+            request = request.header(Config::HEADER_API_KEY, *key);
         }
 
         let response = request.send().await?;

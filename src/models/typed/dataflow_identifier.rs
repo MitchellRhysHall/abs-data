@@ -21,10 +21,6 @@ impl DataflowIdentifier {
     pub fn new(str: &str) -> Self {
         Self { inner: str.into() }
     }
-
-    pub fn builder(dataflow_id: &DataflowId) -> DataflowIdentifierBuilder<'_> {
-        DataflowIdentifierBuilder::new(dataflow_id)
-    }
 }
 
 impl AsRef<str> for DataflowIdentifier {

@@ -1,4 +1,7 @@
 pub mod annotation;
+pub mod codelist;
+pub mod concept;
+pub mod concept_scheme;
 pub mod data_sets;
 pub mod data_structure_components;
 pub mod data_structures;
