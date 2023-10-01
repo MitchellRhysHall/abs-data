@@ -1,9 +1,13 @@
-use std::fmt::{self, Display, Formatter};
+use std::{
+    default,
+    fmt::{self, Display, Formatter},
+};
 
 use strum_macros::EnumIter;
 
-#[derive(Debug, Clone, EnumIter)]
+#[derive(Debug, Clone, Default, EnumIter)]
 pub enum StructureType {
+    #[default]
     DataFlow,
     DataStructure,
     CodeList,

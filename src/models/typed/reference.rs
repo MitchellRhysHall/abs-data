@@ -1,16 +1,21 @@
 use std::fmt::{self, Display, Formatter};
 
-pub enum Reference<'a> {
+use super::structure_type::StructureType;
+
+use strum_macros::EnumIter;
+
+#[derive(Debug, Clone, EnumIter)]
+pub enum Reference {
     None,
     Parents,
     ParentsAndSimplings,
     Children,
     Descendants,
     All,
-    Specific(&'a str),
+    Specific(StructureType),
 }
 
-impl<'a> Display for Reference<'a> {
+impl<'a> Display for Reference {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
             Self::None => write!(f, "none"),

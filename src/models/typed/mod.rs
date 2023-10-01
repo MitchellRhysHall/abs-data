@@ -14,4 +14,5 @@ pub mod reference;
 pub mod region;
 pub mod sdmx_client;
 pub mod sdmx_request;
+pub mod structure_id;
 pub mod structure_type;
