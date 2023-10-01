@@ -37,7 +37,7 @@ where
 {
     pub fn new(agency_id: &'a AgencyId) -> Self {
         Self {
-            base_url: Config::BASE,
+            base_url: Config::BASE_URL,
             agency_id,
             detail: None,
             structure_id: None,
@@ -107,8 +107,6 @@ where
 
 #[cfg(test)]
 mod tests {
-    use flexi_logger::{FileSpec, Logger, WriteMode};
-
     use super::*;
     use crate::{
         builders::dataflow_identifier::DataflowIdentifierBuilder,
@@ -121,7 +119,6 @@ mod tests {
     #[tokio::test]
     async fn send_request_for_dataflows() -> Result<()> {
         let _response = SdmxMetaRequestBuilder::<Dataflows>::new(&AgencyId::Abs)
-            .detail(&MetaDetail::Full)
             .send()
             .await?;
 
@@ -131,7 +128,6 @@ mod tests {
     #[tokio::test]
     async fn send_request_for_data_structures() -> Result<()> {
         let _response = SdmxMetaRequestBuilder::<DataStructures>::new(&AgencyId::Abs)
-            .detail(&MetaDetail::All)
             .send()
             .await?;
 

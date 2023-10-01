@@ -17,23 +17,23 @@ use crate::{
 pub struct SdmxDataRequestBuilder<'a> {
     base_url: &'a str,
     path: &'a str,
-    dataflow_identifier: DataflowIdentifier,
-    data_key: DataKey,
-    start_period: Option<DateGranularity<'a>>,
-    end_period: Option<DateGranularity<'a>>,
-    detail: Option<Detail>,
-    dimension_at_observation: Option<DimensionAtObservation<'a>>,
+    dataflow_identifier: &'a DataflowIdentifier,
+    data_key: Option<&'a DataKey>,
+    start_period: Option<&'a DateGranularity<'a>>,
+    end_period: Option<&'a DateGranularity<'a>>,
+    detail: Option<&'a Detail>,
+    dimension_at_observation: Option<&'a DimensionAtObservation<'a>>,
     key: Option<&'a str>,
     headers: &'a [(&'a str, &'a str)],
 }
 
 impl<'a> SdmxDataRequestBuilder<'a> {
-    pub fn new(dataflow_identifier: DataflowIdentifier, data_key: DataKey) -> Self {
+    pub fn new(dataflow_identifier: &'a DataflowIdentifier) -> Self {
         Self {
-            base_url: Config::BASE,
+            base_url: Config::BASE_URL,
             path: "data",
             dataflow_identifier,
-            data_key,
+            data_key: None,
             start_period: None,
             end_period: None,
             detail: None,
@@ -43,24 +43,29 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         }
     }
 
-    pub fn start_period(mut self, start_period: DateGranularity<'a>) -> Self {
+    pub fn data_key(mut self, data_key: &'a DataKey) -> Self {
+        self.data_key = Some(data_key);
+        self
+    }
+
+    pub fn start_period(mut self, start_period: &'a DateGranularity<'a>) -> Self {
         self.start_period = Some(start_period);
         self
     }
 
-    pub fn end_period(mut self, end_period: DateGranularity<'a>) -> Self {
+    pub fn end_period(mut self, end_period: &'a DateGranularity<'a>) -> Self {
         self.end_period = Some(end_period);
         self
     }
 
-    pub fn detail(mut self, detail: Detail) -> Self {
+    pub fn detail(mut self, detail: &'a Detail) -> Self {
         self.detail = Some(detail);
         self
     }
 
     pub fn dimension_at_observation(
         mut self,
-        dimension_at_observation: DimensionAtObservation<'a>,
+        dimension_at_observation: &'a DimensionAtObservation<'a>,
     ) -> Self {
         self.dimension_at_observation = Some(dimension_at_observation);
         self
@@ -74,8 +79,13 @@ impl<'a> SdmxDataRequestBuilder<'a> {
     fn build(&self) -> SdmxRequest {
         let mut url_builder = UrlBuilder::new(self.base_url)
             .add_path_segment(self.path)
-            .add_path_segment(format!("{}", self.dataflow_identifier))
-            .add_path_segment(format!("{}", self.data_key));
+            .add_path_segment(self.dataflow_identifier.to_string());
+
+        if let Some(data_key) = self.data_key {
+            url_builder = url_builder.add_path_segment(data_key.to_string());
+        } else {
+            url_builder = url_builder.add_path_segment(DataKey::default().to_string());
+        }
 
         if let Some(start_period) = &self.start_period {
             url_builder = url_builder.add_query_param("startPeriod", start_period.to_string());
@@ -114,9 +124,8 @@ mod tests {
 
     #[tokio::test]
     async fn send_request_with_default_detail() -> Result<()> {
-        let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::Cpi).build()?;
-        let datakey = DataKey::default();
-        let _response = SdmxDataRequestBuilder::new(dataflow_identifier, datakey)
+        let dataflow_identifier = DataflowIdentifierBuilder::new(&DataflowId::Cpi).build()?;
+        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
             .send()
             .await?;
 
@@ -125,10 +134,9 @@ mod tests {
 
     #[tokio::test]
     async fn send_request_with_full_detail() -> Result<()> {
-        let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::Cpi).build()?;
-        let datakey = DataKey::default();
-        let _response = SdmxDataRequestBuilder::new(dataflow_identifier, datakey)
-            .detail(Detail::Full)
+        let dataflow_identifier = DataflowIdentifierBuilder::new(&DataflowId::Cpi).build()?;
+        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
+            .detail(&Detail::Full)
             .send()
             .await?;
 
@@ -137,10 +145,9 @@ mod tests {
 
     #[tokio::test]
     async fn send_request_with_data_only_detail() -> Result<()> {
-        let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::Cpi).build()?;
-        let datakey = DataKey::default();
-        let _response = SdmxDataRequestBuilder::new(dataflow_identifier, datakey)
-            .detail(Detail::DataOnly)
+        let dataflow_identifier = DataflowIdentifierBuilder::new(&DataflowId::Cpi).build()?;
+        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
+            .detail(&Detail::DataOnly)
             .send()
             .await?;
 
@@ -149,10 +156,9 @@ mod tests {
 
     #[tokio::test]
     async fn send_request_with_no_data_detail() -> Result<()> {
-        let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::Cpi).build()?;
-        let datakey = DataKey::default();
-        let _response = SdmxDataRequestBuilder::new(dataflow_identifier, datakey)
-            .detail(Detail::NoData)
+        let dataflow_identifier = DataflowIdentifierBuilder::new(&DataflowId::Cpi).build()?;
+        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
+            .detail(&Detail::NoData)
             .send()
             .await?;
 
@@ -161,10 +167,9 @@ mod tests {
 
     #[tokio::test]
     async fn send_request_with_series_keys_only_detail() -> Result<()> {
-        let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::Cpi).build()?;
-        let datakey = DataKey::default();
-        let _response = SdmxDataRequestBuilder::new(dataflow_identifier, datakey)
-            .detail(Detail::SeriesKeysOnly)
+        let dataflow_identifier = DataflowIdentifierBuilder::new(&DataflowId::Cpi).build()?;
+        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
+            .detail(&Detail::SeriesKeysOnly)
             .send()
             .await?;
 

@@ -1,7 +1,7 @@
 pub(crate) struct Config;
 
 impl Config {
-    pub(crate) const BASE: &str = "https://api.data.abs.gov.au";
+    pub(crate) const BASE_URL: &str = "https://api.data.abs.gov.au";
     pub(crate) const DATA_KEY_MAX_LENGTH: usize = 260;
     pub(crate) const DATA_KEY_REQUIRED_DOT_COUNT: usize = 4;
 
