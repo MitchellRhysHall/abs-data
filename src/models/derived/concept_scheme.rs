@@ -14,11 +14,11 @@ pub struct ConceptSchemes {
 #[serde(rename_all = "camelCase")]
 pub struct ConceptScheme {
     pub id: Box<str>,
-    pub links: Box<[Link]>,
+    pub links: Option<Box<[Link]>>,
     pub version: Box<str>,
     #[serde(rename = "agencyID")]
     pub agency_id: Box<str>,
-    pub is_external_reference: bool,
+    pub is_external_reference: Option<bool>,
     pub is_final: bool,
     pub name: Box<str>,
     pub names: Names,
