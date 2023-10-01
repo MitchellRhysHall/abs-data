@@ -1,4 +1,4 @@
-use crate::{error_code::ErrorCode, Result};
+use crate::error_code::{ErrorCode, Result};
 use url::Url;
 
 pub struct UrlBuilder {
