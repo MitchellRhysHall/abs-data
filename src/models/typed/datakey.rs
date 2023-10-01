@@ -56,15 +56,15 @@ impl TryFrom<DataKeyDimensions<'_>> for DataKey {
         let mut dimensions_vec = Vec::new();
 
         if !measure.is_empty() {
-            dimensions_vec.push(DataKey::format_dimension(&measure));
+            dimensions_vec.push(DataKey::format_dimension(measure));
         }
 
         if !region.is_empty() {
-            dimensions_vec.push(DataKey::format_dimension(&region));
+            dimensions_vec.push(DataKey::format_dimension(region));
         }
 
         if !frequency.is_empty() {
-            dimensions_vec.push(DataKey::format_dimension(&frequency));
+            dimensions_vec.push(DataKey::format_dimension(frequency));
         }
 
         let mut dimensions_str = dimensions_vec.join(".");
@@ -93,7 +93,7 @@ impl TryFrom<&str> for DataKey {
     type Error = ErrorCode;
 
     fn try_from(str: &str) -> Result<Self> {
-        let items: Box<[&str]> = str.split(".").collect();
+        let items: Box<[&str]> = str.split('.').collect();
 
         for item in items.iter() {
             if item.parse::<u8>().is_err() {

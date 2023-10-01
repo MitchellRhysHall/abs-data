@@ -32,7 +32,7 @@ impl<'a> DataflowIdentifierBuilder<'a> {
     pub fn build(self) -> Result<DataflowIdentifier> {
         let dimensions = DataflowIdentifierDimensions {
             agency_id: self.agency_id,
-            dataflow_id: &self.dataflow_id,
+            dataflow_id: self.dataflow_id,
             version: self.version,
         };
 

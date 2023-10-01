@@ -22,8 +22,8 @@ impl DataflowIdentifier {
         Self { inner: str.into() }
     }
 
-    pub fn builder<'a>(dataflow_id: &'a DataflowId) -> DataflowIdentifierBuilder<'a> {
-        DataflowIdentifierBuilder::new(&dataflow_id)
+    pub fn builder(dataflow_id: &DataflowId) -> DataflowIdentifierBuilder<'_> {
+        DataflowIdentifierBuilder::new(dataflow_id)
     }
 }
 

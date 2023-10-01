@@ -8,7 +8,7 @@ pub struct SdmxClient {
 
 impl SdmxClient {
     pub fn get_or_init() -> Self {
-        let inner = CLIENT.get_or_init(|| reqwest::Client::new());
+        let inner = CLIENT.get_or_init(reqwest::Client::new);
         Self {
             inner: inner.into(),
         }

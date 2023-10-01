@@ -1,13 +1,13 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    models::typed::{dataflow_id::DataflowId, structure_type::StructureType},
+    models::typed::{dataflow_id::DataflowId},
     traits::url_path_segment::UrlPathSegment,
 };
 
 use super::{
-    annotation::Annotation, data_structures::DataStructure, descriptions::Descriptions,
-    names::Names, sdmx_response::SdmxResponse,
+    annotation::Annotation, descriptions::Descriptions,
+    names::Names,
 };
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

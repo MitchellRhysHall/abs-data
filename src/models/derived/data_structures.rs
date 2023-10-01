@@ -4,7 +4,6 @@ use crate::traits::url_path_segment::UrlPathSegment;
 
 use super::{
     data_structure_components::DataStructureComponents, link::Link, names::Names,
-    sdmx_response::SdmxResponse,
 };
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

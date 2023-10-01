@@ -37,11 +37,11 @@ impl UrlBuilder {
     }
 
     pub fn build(self) -> Result<Url> {
-        let mut url = Url::parse(&*self.base_url)?;
+        let mut url = Url::parse(&self.base_url)?;
 
         url.path_segments_mut()
             .map_err(|_| ErrorCode::UrlCannotBeABase)?
-            .extend(self.path_segments.into_iter().map(|s| s));
+            .extend(self.path_segments);
 
         if !self.query_params.is_empty() {
             let query_string = self

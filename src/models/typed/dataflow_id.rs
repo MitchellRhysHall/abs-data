@@ -36,7 +36,7 @@ impl Serialize for DataflowId {
             Self::Cpi => serializer.serialize_str("CPI"),
             Self::Ppi => serializer.serialize_str("PPI"),
             Self::Wpi => serializer.serialize_str("WPI"),
-            Self::Other(id) => serializer.serialize_str(&id),
+            Self::Other(id) => serializer.serialize_str(id),
         }
     }
 }
