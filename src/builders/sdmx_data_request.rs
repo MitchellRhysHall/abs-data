@@ -2,8 +2,8 @@ use log::info;
 
 use crate::{
     builders::url::UrlBuilder,
+    config::Config,
     error_code::Result,
-    factories::{request_header::RequestHeaderFactory, url::UrlFactory},
     models::{
         derived::{data_sets::DataSets, sdmx_response::SdmxResponse},
         typed::{
@@ -30,7 +30,7 @@ pub struct SdmxDataRequestBuilder<'a> {
 impl<'a> SdmxDataRequestBuilder<'a> {
     pub fn new(dataflow_identifier: DataflowIdentifier, data_key: DataKey) -> Self {
         Self {
-            base_url: UrlFactory::BASE,
+            base_url: Config::BASE,
             path: "data",
             dataflow_identifier,
             data_key,
@@ -39,10 +39,7 @@ impl<'a> SdmxDataRequestBuilder<'a> {
             detail: None,
             dimension_at_observation: None,
             key: None,
-            headers: &[
-                RequestHeaderFactory::USER_AGENT_ANONYMOUS,
-                RequestHeaderFactory::ACCEPT_DATA_JSON,
-            ],
+            headers: &[Config::USER_AGENT_ANONYMOUS, Config::ACCEPT_DATA_JSON],
         }
     }
 

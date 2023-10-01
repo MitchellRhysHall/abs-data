@@ -1,4 +1,5 @@
 use crate::{
+    config::Config,
     error_code::Result,
     models::typed::{
         datakey::DataKey, datakey_dimensions::DataKeyDimensions, frequency::Frequency,
@@ -19,7 +20,7 @@ impl DataKeyBuilder {
             measure: Vec::new(),
             region: Vec::new(),
             frequency: Vec::new(),
-            max_length: 260,
+            max_length: Config::DATA_KEY_MAX_LENGTH,
         }
     }
 

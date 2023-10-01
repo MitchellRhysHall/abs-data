@@ -4,8 +4,8 @@ use serde::de::DeserializeOwned;
 
 use crate::{
     builders::url::UrlBuilder,
+    config::Config,
     error_code::Result,
-    factories::{request_header::RequestHeaderFactory, url::UrlFactory},
     models::{
         derived::sdmx_response::SdmxResponse,
         typed::{
@@ -37,17 +37,14 @@ where
 {
     pub fn new(agency_id: &'a AgencyId) -> Self {
         Self {
-            base_url: UrlFactory::BASE,
+            base_url: Config::BASE,
             agency_id,
             detail: None,
             structure_id: None,
             structure_version: None,
             references: None,
             key: None,
-            headers: &[
-                RequestHeaderFactory::USER_AGENT_ANONYMOUS,
-                RequestHeaderFactory::ACCEPT_STRUCTURE_JSON,
-            ],
+            headers: &[Config::USER_AGENT_ANONYMOUS, Config::ACCEPT_STRUCTURE_JSON],
             phantom: PhantomData,
         }
     }
@@ -113,12 +110,25 @@ mod tests {
     use super::*;
     use crate::{
         builders::dataflow_identifier::DataflowIdentifierBuilder,
-        models::{derived::dataflows::Dataflows, typed::dataflow_id::DataflowId},
+        models::{
+            derived::{data_structures::DataStructures, dataflows::Dataflows},
+            typed::dataflow_id::DataflowId,
+        },
     };
 
     #[tokio::test]
-    async fn send_request_with_default_detail() -> Result<()> {
+    async fn send_request_for_dataflows() -> Result<()> {
         let _response = SdmxMetaRequestBuilder::<Dataflows>::new(&AgencyId::Abs)
+            .detail(&MetaDetail::All)
+            .send()
+            .await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn send_request_for_data_structures() -> Result<()> {
+        let _response = SdmxMetaRequestBuilder::<DataStructures>::new(&AgencyId::Abs)
             .detail(&MetaDetail::All)
             .send()
             .await?;
