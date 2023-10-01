@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::traits::SdmxResponseType::ResponseType;
+use crate::traits::url_path_segment::UrlPathSegment;
 
 use super::{
     data_structure_components::DataStructureComponents, link::Link, names::Names,
@@ -28,6 +28,8 @@ pub struct DataStructure {
     pub data_structure_components: DataStructureComponents,
 }
 
-impl ResponseType for DataStructures {
-    type Response = SdmxResponse<DataStructures>;
+impl UrlPathSegment for DataStructures {
+    fn url_path_segment() -> &'static str {
+        "datastructures"
+    }
 }

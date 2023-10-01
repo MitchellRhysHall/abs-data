@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{models::typed::dataflow_id::DataflowId, traits::SdmxResponseType::ResponseType};
+use crate::{
+    models::typed::{dataflow_id::DataflowId, structure_type::StructureType},
+    traits::url_path_segment::UrlPathSegment,
+};
 
 use super::{
     annotation::Annotation, data_structures::DataStructure, descriptions::Descriptions,
@@ -29,6 +32,8 @@ pub struct Dataflow {
     pub structure: Option<Box<str>>,
 }
 
-impl ResponseType for Dataflows {
-    type Response = SdmxResponse<Dataflows>;
+impl UrlPathSegment for Dataflows {
+    fn url_path_segment() -> &'static str {
+        "dataflows"
+    }
 }

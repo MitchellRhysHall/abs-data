@@ -1,5 +1,7 @@
 use std::marker::PhantomData;
 
+use serde::de::DeserializeOwned;
+
 use crate::{
     builders::url::UrlBuilder,
     error_code::Result,
@@ -8,15 +10,17 @@ use crate::{
         derived::sdmx_response::SdmxResponse,
         typed::{
             agency_id::AgencyId, meta_detail::MetaDetail, reference::Reference,
-            sdmx_request::SdmxRequest, structure_type::StructureType,
+            sdmx_request::SdmxRequest,
         },
     },
-    traits::SdmxResponseType::ResponseType,
+    traits::url_path_segment::UrlPathSegment,
 };
 
-pub struct SdmxMetaRequestBuilder<'a, T: ResponseType> {
+pub struct SdmxMetaRequestBuilder<'a, T>
+where
+    T: UrlPathSegment + DeserializeOwned,
+{
     base_url: &'a str,
-    structure_type: &'a StructureType,
     agency_id: &'a AgencyId,
     detail: Option<&'a MetaDetail>,
     structure_id: Option<&'a str>,
@@ -27,11 +31,13 @@ pub struct SdmxMetaRequestBuilder<'a, T: ResponseType> {
     phantom: PhantomData<T>,
 }
 
-impl<'a, T: ResponseType> SdmxMetaRequestBuilder<'a, T> {
-    pub fn new(structure_type: &'a StructureType, agency_id: &'a AgencyId) -> Self {
+impl<'a, T> SdmxMetaRequestBuilder<'a, T>
+where
+    T: UrlPathSegment + DeserializeOwned,
+{
+    pub fn new(agency_id: &'a AgencyId) -> Self {
         Self {
             base_url: UrlFactory::BASE,
-            structure_type,
             agency_id,
             detail: None,
             structure_id: None,
@@ -73,7 +79,7 @@ impl<'a, T: ResponseType> SdmxMetaRequestBuilder<'a, T> {
 
     fn build(&self) -> SdmxRequest {
         let mut url_builder = UrlBuilder::new(self.base_url)
-            .add_path_segment(self.structure_type.to_string())
+            .add_path_segment(T::url_path_segment())
             .add_path_segment(self.agency_id.to_string());
 
         if let Some(structure_id) = &self.structure_id {
@@ -97,10 +103,26 @@ impl<'a, T: ResponseType> SdmxMetaRequestBuilder<'a, T> {
         SdmxRequest::new(url, self.key, self.headers)
     }
 
-    pub async fn send(&self) -> Result<SdmxResponse<T>>
-    where
-        T: ResponseType + serde::de::DeserializeOwned,
-    {
+    pub async fn send(&self) -> Result<SdmxResponse<T>> {
         self.build().send::<T>().await
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{
+        builders::dataflow_identifier::DataflowIdentifierBuilder,
+        models::{derived::dataflows::Dataflows, typed::dataflow_id::DataflowId},
+    };
+
+    #[tokio::test]
+    async fn send_request_with_default_detail() -> Result<()> {
+        let _response = SdmxMetaRequestBuilder::<Dataflows>::new(&AgencyId::Abs)
+            .detail(&MetaDetail::All)
+            .send()
+            .await?;
+
+        Ok(())
     }
 }
