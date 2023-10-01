@@ -115,8 +115,8 @@ where
 mod tests {
     use super::*;
     use crate::models::derived::{
-        codelist::Codelists, concept_scheme::ConceptSchemes, data_structures::DataStructures,
-        dataflows::Dataflows,
+        category_schemes::CategorySchemes, codelist::Codelists, concept_schemes::ConceptSchemes,
+        data_structures::DataStructures, dataflows::Dataflows,
     };
 
     #[tokio::test]
@@ -148,6 +148,15 @@ mod tests {
     #[tokio::test]
     async fn send_request_for_concept_schemes() -> Result<()> {
         let _response = SdmxMetaRequestBuilder::<ConceptSchemes>::new()
+            .send()
+            .await?;
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn send_request_for_category_schemes() -> Result<()> {
+        let _response = SdmxMetaRequestBuilder::<CategorySchemes>::new()
             .send()
             .await?;
 
