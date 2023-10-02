@@ -34,6 +34,9 @@ pub enum ErrorCode {
     #[error("UTF-8 decode error: {0}")]
     Utf8Decode(#[from] std::str::Utf8Error),
 
+    #[error("Hashmap contains no keys or values")]
+    HashMapNoKeyValuesFound,
+
     #[error("Custom error: {0}")]
     Custom(Box<str>),
 }

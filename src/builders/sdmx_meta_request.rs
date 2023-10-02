@@ -1,11 +1,16 @@
+use std::collections::HashMap;
+
 use semver::Version;
 
 use crate::{
     builders::url::UrlBuilder,
     config::Config,
-    error_code::Result,
+    error_code::{ErrorCode, Result},
     models::{
-        derived::{meta_data_sets::MetaDataSets, sdmx_response::SdmxResponse},
+        derived::{
+            meta_data_sets::{MetaDataSet, MetaDataSets},
+            sdmx_response::SdmxResponse,
+        },
         typed::{
             agency_id::AgencyId, meta_detail::MetaDetail, reference::Reference,
             sdmx_request::SdmxRequest, structure_id::StructureId, structure_type::StructureType,
@@ -83,13 +88,13 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
             }
         }
 
-        if let Some(detail) = self.detail {
-            url_builder = url_builder.add_query_param(Config::QUERY_DETAIL, detail.to_string());
-        }
-
         if let Some(references) = self.references {
             url_builder =
                 url_builder.add_query_param(Config::QUERY_REFERENCES, references.to_string());
+        }
+
+        if let Some(detail) = self.detail {
+            url_builder = url_builder.add_query_param(Config::QUERY_DETAIL, detail.to_string());
         }
 
         let url = url_builder.build().expect("Failed to build url");
@@ -98,11 +103,29 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
     }
 
     pub async fn send(&self) -> Result<SdmxResponse<MetaDataSets>> {
-        self.build().send::<MetaDataSets>().await
+        let mut raw = self
+            .build()
+            .send::<HashMap<Box<str>, MetaDataSets>>()
+            .await?;
+
+        let meta_data_sets = raw
+            .data
+            .drain()
+            .next()
+            .ok_or(ErrorCode::HashMapNoKeyValuesFound)?
+            .1;
+
+        let response: SdmxResponse<MetaDataSets> = SdmxResponse {
+            data: meta_data_sets,
+            meta: raw.meta,
+        };
+
+        Ok(response)
     }
 }
 
 // Prop testing instead? poptest crate
+// Use keys to avoid 504's?
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -139,7 +162,7 @@ mod tests {
     async fn send_request_all_structure_ids() -> Result<()> {
         let futures: Vec<_> = StructureId::iter()
             .map(|structure_id| async move {
-                let result = SdmxMetaRequestBuilder::new(&StructureType::ActualConstraint)
+                let result = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
                     .detail(&MetaDetail::AllStubs)
                     .structure_id(&StructureId::All)
                     .send()
@@ -166,7 +189,7 @@ mod tests {
     async fn send_request_all_references() -> Result<()> {
         let futures: Vec<_> = Reference::iter()
             .map(|reference| async move {
-                let result = SdmxMetaRequestBuilder::new(&StructureType::ActualConstraint)
+                let result = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
                     .detail(&MetaDetail::AllStubs)
                     .references(&reference)
                     .send()

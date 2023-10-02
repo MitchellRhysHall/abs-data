@@ -1,12 +1,8 @@
-use std::collections::HashMap;
-
 use serde::{Deserialize, Serialize};
 
 use super::{concept::Concept, descriptions::Descriptions, link::Link, names::Names};
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct MetaDataSets(HashMap<Box<str>, Box<[MetaDataSet]>>);
+pub type MetaDataSets = Box<[MetaDataSet]>;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
