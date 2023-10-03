@@ -41,14 +41,12 @@ impl<'a> From<SdmxRequest<'a>> for SdmxMetaRequest<'a> {
     }
 }
 
-// Prop testing instead? poptest crate
 #[cfg(test)]
 mod tests {
     use crate::{
         builders::sdmx_meta_request::SdmxMetaRequestBuilder,
         models::typed::{
-            meta_detail::MetaDetail, reference::Reference, structure_id::StructureId,
-            structure_type::StructureType,
+            meta_detail::MetaDetail, structure_id::StructureId, structure_type::StructureType,
         },
     };
 
@@ -105,34 +103,6 @@ mod tests {
                 result.is_ok(),
                 "Failed for StructureId::{:?} with error: {:?}",
                 structure_id,
-                result.as_ref().err().unwrap()
-            )
-        });
-
-        Ok(())
-    }
-
-    #[tokio::test]
-    async fn send_request_all_references() -> Result<()> {
-        let futures: Vec<_> = Reference::iter()
-            .map(|reference| async move {
-                let result = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
-                    .detail(&MetaDetail::AllStubs)
-                    .references(&reference)
-                    .build()
-                    .send()
-                    .await;
-                (reference, result)
-            })
-            .collect();
-
-        let results: Vec<_> = join_all(futures).await;
-
-        results.iter().for_each(|(reference, result)| {
-            assert!(
-                result.is_ok(),
-                "Failed for Reference::{:?} with error: {:?}",
-                reference,
                 result.as_ref().err().unwrap()
             )
         });

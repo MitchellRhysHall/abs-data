@@ -1,5 +1,6 @@
 use std::fmt::{self, Display, Formatter};
 
+#[derive(Debug, Clone)]
 pub enum MetaDetail {
     AllStubs,
     Reference,

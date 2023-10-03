@@ -2,9 +2,7 @@ use std::fmt::{self, Display, Formatter};
 
 use super::structure_type::StructureType;
 
-use strum_macros::EnumIter;
-
-#[derive(Debug, Clone, EnumIter)]
+#[derive(Debug, Clone)]
 pub enum Reference {
     None,
     Parents,

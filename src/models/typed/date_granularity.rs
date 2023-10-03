@@ -1,5 +1,6 @@
 use std::fmt::{self, Display, Formatter};
 
+#[derive(Debug, Clone)]
 pub enum DateGranularity<'a> {
     Year(u16),
     YearSemester(u16, &'a str),
