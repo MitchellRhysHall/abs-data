@@ -145,7 +145,7 @@ mod tests {
         let version = &Version::new(1, 0, 0);
         let result = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
             .detail(&MetaDetail::AllStubs)
-            .structure_version(&version)
+            .structure_version(version)
             .build()
             .send()
             .await;

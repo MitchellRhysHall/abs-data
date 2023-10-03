@@ -1,18 +1,11 @@
 use crate::{
     builders::url::UrlBuilder,
     config::Config,
-    error_code::Result,
-    models::{
-        derived::{
-            data_sets::{DataSetWrapper, DataSets},
-            sdmx_response::SdmxResponse,
-        },
-        typed::{
-            dataflow_identifier::DataflowIdentifier, datakey::DataKey,
-            date_granularity::DateGranularity, detail::Detail,
-            dimension_at_observation::DimensionAtObservation, sdmx_data_request::SdmxDataRequest,
-            sdmx_request::SdmxRequest,
-        },
+    models::typed::{
+        dataflow_identifier::DataflowIdentifier, datakey::DataKey,
+        date_granularity::DateGranularity, detail::Detail,
+        dimension_at_observation::DimensionAtObservation, sdmx_data_request::SdmxDataRequest,
+        sdmx_request::SdmxRequest,
     },
 };
 
