@@ -1,7 +1,4 @@
-use std::{
-    default,
-    fmt::{self, Display, Formatter},
-};
+use std::fmt::{self, Display, Formatter};
 
 use strum_macros::EnumIter;
 

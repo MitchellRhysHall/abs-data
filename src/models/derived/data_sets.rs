@@ -4,9 +4,11 @@ use serde::{Deserialize, Serialize};
 
 use super::link::Link;
 
+pub type DataSets = Box<[DataSet]>;
+
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct DataSets {
+pub struct DataSetWrapper {
     pub data_sets: Box<[DataSet]>,
 }
 

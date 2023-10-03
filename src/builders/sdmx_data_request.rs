@@ -3,11 +3,15 @@ use crate::{
     config::Config,
     error_code::Result,
     models::{
-        derived::{data_sets::DataSets, sdmx_response::SdmxResponse},
+        derived::{
+            data_sets::{DataSetWrapper, DataSets},
+            sdmx_response::SdmxResponse,
+        },
         typed::{
             dataflow_identifier::DataflowIdentifier, datakey::DataKey,
             date_granularity::DateGranularity, detail::Detail,
-            dimension_at_observation::DimensionAtObservation, sdmx_request::SdmxRequest,
+            dimension_at_observation::DimensionAtObservation, sdmx_data_request::SdmxDataRequest,
+            sdmx_request::SdmxRequest,
         },
     },
 };
@@ -74,7 +78,7 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         self
     }
 
-    fn build(&self) -> SdmxRequest {
+    pub fn build(&self) -> SdmxDataRequest {
         let mut url_builder = UrlBuilder::new(self.base_url)
             .add_path_segment(self.path)
             .add_path_segment(self.dataflow_identifier.to_string());
@@ -105,50 +109,8 @@ impl<'a> SdmxDataRequestBuilder<'a> {
 
         let url = url_builder.build().expect("Failed to build url");
 
-        SdmxRequest::new(url, self.key, self.headers)
-    }
+        let request = SdmxRequest::new(url, self.key, self.headers);
 
-    pub async fn send(&self) -> Result<SdmxResponse<DataSets>> {
-        self.build().send::<DataSets>().await
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use futures::future::join_all;
-    use strum::IntoEnumIterator;
-
-    use super::*;
-    use crate::{
-        builders::dataflow_identifier::DataflowIdentifierBuilder,
-        models::typed::dataflow_id::DataflowId,
-    };
-
-    #[tokio::test]
-    async fn send_request_with_all_details() -> Result<()> {
-        let dataflow_identifier = DataflowIdentifierBuilder::new(&DataflowId::Cpi).build()?;
-
-        let futures: Vec<_> = Detail::iter()
-            .map(|detail| async {
-                let result = SdmxDataRequestBuilder::new(&dataflow_identifier)
-                    .detail(&detail)
-                    .send()
-                    .await;
-                (detail, result)
-            })
-            .collect();
-
-        let results: Vec<_> = join_all(futures).await;
-
-        results.iter().for_each(|(detail, result)| {
-            assert!(
-                result.is_ok(),
-                "Failed for Detail::{:?} with error: {:?}",
-                detail,
-                result.as_ref().err().unwrap()
-            )
-        });
-
-        Ok(())
+        SdmxDataRequest::from(request)
     }
 }

@@ -13,6 +13,8 @@ pub mod meta_detail;
 pub mod reference;
 pub mod region;
 pub mod sdmx_client;
+pub mod sdmx_data_request;
+pub mod sdmx_meta_request;
 pub mod sdmx_request;
 pub mod structure_id;
 pub mod structure_type;
