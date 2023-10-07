@@ -74,6 +74,6 @@ impl<'de> Deserialize<'de> for Version {
         D: Deserializer<'de>,
     {
         let s: Box<str> = Deserialize::deserialize(deserializer)?;
-        Ok(s.try_into().map_err(|err| de::Error::custom(err))?)
+        s.try_into().map_err(de::Error::custom)
     }
 }
