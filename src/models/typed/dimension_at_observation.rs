@@ -1,13 +1,16 @@
 use std::fmt::{self, Display, Formatter};
 
-#[derive(Debug, Clone)]
-pub enum DimensionAtObservation<'a> {
+use serde::{Deserialize, Serialize};
+use strum_macros::EnumIter;
+
+#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, EnumIter)]
+pub enum DimensionAtObservation {
     TimePeriod,
     All,
-    Id(&'a str),
+    Id(Box<str>),
 }
 
-impl<'a> Display for DimensionAtObservation<'a> {
+impl Display for DimensionAtObservation {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
             Self::TimePeriod => write!(f, "TIME_PERIOD"),

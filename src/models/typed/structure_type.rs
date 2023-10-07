@@ -1,7 +1,10 @@
+use serde::{Deserialize, Serialize};
 use std::fmt::{self, Display, Formatter};
 use strum_macros::EnumIter;
 
-#[derive(Debug, Clone, EnumIter)]
+#[derive(
+    Debug, Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, EnumIter,
+)]
 pub enum StructureType {
     ActualConstraint,
     Categorisation,
@@ -11,8 +14,8 @@ pub enum StructureType {
     ContentConstraint,
     DataFlow,
     DataStructure,
-    // AgencyScheme, -- Currently returns 404 despite being listed in documentation
-    // HierarchicalCodelist, -- Currently returns 404 despite being listed in documentation
+    AgencyScheme,
+    HierarchicalCodelist,
 }
 
 impl Display for StructureType {
@@ -26,8 +29,14 @@ impl Display for StructureType {
             Self::ContentConstraint => write!(f, "contentconstraint"),
             Self::DataFlow => write!(f, "dataflow"),
             Self::DataStructure => write!(f, "datastructure"),
-            // Self::AgencyScheme => write!(f, "agencyscheme"),
-            // Self::HierarchicalCodelist => write!(f, "hierarchicalcodelist"),
+            Self::AgencyScheme => write!(f, "agencyscheme"),
+            Self::HierarchicalCodelist => write!(f, "hierarchicalcodelist"),
         }
+    }
+}
+
+impl Default for StructureType {
+    fn default() -> Self {
+        Self::DataFlow
     }
 }

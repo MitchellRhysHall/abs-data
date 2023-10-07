@@ -14,10 +14,10 @@ pub struct SdmxDataRequestBuilder<'a> {
     path: &'a str,
     dataflow_identifier: &'a DataflowIdentifier,
     data_key: Option<&'a DataKey>,
-    start_period: Option<&'a DateGranularity<'a>>,
-    end_period: Option<&'a DateGranularity<'a>>,
+    start_period: Option<&'a DateGranularity>,
+    end_period: Option<&'a DateGranularity>,
     detail: Option<&'a Detail>,
-    dimension_at_observation: Option<&'a DimensionAtObservation<'a>>,
+    dimension_at_observation: Option<&'a DimensionAtObservation>,
     key: Option<&'a str>,
     headers: &'a [(&'a str, &'a str)],
 }
@@ -43,12 +43,12 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         self
     }
 
-    pub fn start_period(mut self, start_period: &'a DateGranularity<'a>) -> Self {
+    pub fn start_period(mut self, start_period: &'a DateGranularity) -> Self {
         self.start_period = Some(start_period);
         self
     }
 
-    pub fn end_period(mut self, end_period: &'a DateGranularity<'a>) -> Self {
+    pub fn end_period(mut self, end_period: &'a DateGranularity) -> Self {
         self.end_period = Some(end_period);
         self
     }
@@ -60,7 +60,7 @@ impl<'a> SdmxDataRequestBuilder<'a> {
 
     pub fn dimension_at_observation(
         mut self,
-        dimension_at_observation: &'a DimensionAtObservation<'a>,
+        dimension_at_observation: &'a DimensionAtObservation,
     ) -> Self {
         self.dimension_at_observation = Some(dimension_at_observation);
         self

@@ -1,8 +1,11 @@
 use std::fmt::{self, Display, Formatter};
 
+use serde::{Deserialize, Serialize};
 use strum_macros::EnumIter;
 
-#[derive(Debug, Clone, EnumIter)]
+#[derive(
+    Debug, Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, EnumIter,
+)]
 pub enum Detail {
     Full,
     DataOnly,

@@ -2,59 +2,9 @@ use std::fmt;
 
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-/// `DataflowId` Enum - Identifiers for Various Data Flows
-///
-/// Enumerates various identifiers associated with different data flows within a system or application.
-/// This list is not exhaustive and serves as a subset of possible identifiers,
-/// providing a set of well-known or common identifiers as predefined enum variants.
-///
-/// ## Variants
-///
-/// - `Capex`: [Description for Capex]
-/// - `Cpi`: Consumer Price Index
-/// - `Cwd`: [Description for Cwd]
-/// - `Ewd`: [Description for Ewd]
-/// - `Itgs`: [Description for Itgs]
-/// - `Jv`: [Description for Jv]
-/// - `Lci`: [Description for Lci]
-/// - `Lf`: [Description for Lf]
-/// - `PopulationClock`: [Description for PopulationClock]
-/// - `Ppi`: Producer Price Index
-/// - `Qbis`: [Description for Qbis]
-/// - `Rppi`: [Description for Rppi]
-/// - `Rt`: [Description for Rt]
-/// - `Wpi`: Wholesale Price Index
-/// - `Other(Box<str>)`: Any other identifier not listed as a variant
-///
-/// ## Usage
-///
-/// This enum can be used to specify, classify, or query different data flows within the application.
-/// Additional data flow identifiers, which are not listed as variants, can be represented using the
-/// `Other` variant by boxing the custom identifier string.
-///
-/// ## Note
-///
-/// Additional dataflow identifiers that are not enumerated here can potentially be queried
-/// or retrieved via a meta request for "dataflows" from relevant data sources or services.
-///
-/// ```
-/// use your_crate::DataflowId;
-///
-/// fn get_data_flow(dataflow: DataflowId) {
-///     // Usage example
-///     match dataflow {
-///         DataflowId::Cpi => {
-///             // Handle CPI related logic here
-///         },
-///         DataflowId::Other(id) => {
-///             // Handle custom identifier related logic here
-///         },
-///         _ => {
-///             // Handle other variants or default case here
-///         }
-///     }
-/// }
-/// ```#[derive(Debug, Clone, PartialEq, Eq)]
+use strum_macros::EnumIter;
+
+#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, EnumIter)]
 pub enum DataflowId {
     Capex,
     Cpi,
