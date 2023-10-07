@@ -1,12 +1,10 @@
-use semver::Version;
-
 use crate::{
     builders::url::UrlBuilder,
     config::Config,
     models::typed::{
         agency_id::AgencyId, meta_detail::MetaDetail, reference::Reference,
         sdmx_meta_request::SdmxMetaRequest, sdmx_request::SdmxRequest, structure_id::StructureId,
-        structure_type::StructureType,
+        structure_type::StructureType, version::Version,
     },
 };
 

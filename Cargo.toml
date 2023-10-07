@@ -12,6 +12,5 @@ serde_json = "1.0.107"
 thiserror = "1.0.48"
 tokio = { version = "1.32.0", features = ["macros", "rt", "rt-multi-thread"] }
 url = "2.4.1"
-semver = "1.0.18"
 strum = { version = "0.25", features = ["derive"] }
 strum_macros = "0.25"

@@ -20,7 +20,7 @@ pub enum DataflowId {
     Rppi,
     Rt,
     Wpi,
-    Other(Box<str>),
+    Specific(Box<str>),
 }
 
 impl fmt::Display for DataflowId {
@@ -40,7 +40,7 @@ impl fmt::Display for DataflowId {
             Self::Rppi => write!(f, "RPPI"),
             Self::Rt => write!(f, "RT"),
             Self::Wpi => write!(f, "WPI"),
-            Self::Other(x) => write!(f, "{}", x),
+            Self::Specific(x) => write!(f, "{}", x),
         }
     }
 }
@@ -65,7 +65,7 @@ impl Serialize for DataflowId {
             Self::Rppi => serializer.serialize_str("RPPI"),
             Self::Rt => serializer.serialize_str("RT"),
             Self::Wpi => serializer.serialize_str("WPI"),
-            Self::Other(id) => serializer.serialize_str(id),
+            Self::Specific(id) => serializer.serialize_str(id),
         }
     }
 }
@@ -91,7 +91,7 @@ impl<'de> Deserialize<'de> for DataflowId {
             "RPPI" => Self::Rppi,
             "RT" => Self::Rt,
             "WPI" => Self::Wpi,
-            _ => Self::Other(s),
+            _ => Self::Specific(s),
         })
     }
 }

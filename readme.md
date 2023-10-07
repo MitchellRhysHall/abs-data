@@ -17,6 +17,8 @@ Add this to your `Cargo.toml`:
 abs_data = "0.1"
 ```
 
+Request and select by dataflow:
+
 ```rust
 use abs_data::builders::{
     dataflow_identifier::DataflowIdentifierBuilder, sdmx_data_request::SdmxDataRequestBuilder,
@@ -25,10 +27,25 @@ use abs_data::models::typed::{dataflow_id::DataflowId, detail::Detail};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let dataflow_identifier = DataflowIdentifierBuilder::new(&DataflowId::Cpi).build()?;
+    let meta_response = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
+        .build()
+        .send()
+        .await?;
+
+    let dataflow = &meta_response.data[10]; // Select desired dataflow
+
+    println!("{dataflow:?}");
+
+    let dataflow_identifier =
+        DataflowIdentifierBuilder::new(&DataflowId::Specific(dataflow.id.clone()))
+            .agency_id(&dataflow.agency_id)
+            .version(&dataflow.version)
+            .build()?;
 
     let response = SdmxDataRequestBuilder::new(&dataflow_identifier)
         .detail(&Detail::DataOnly)
+        .start_period(&DateGranularity::Year(2012))
+        .end_period(&DateGranularity::Year(2022))
         .build()
         .send()
         .await?;

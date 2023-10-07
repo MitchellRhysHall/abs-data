@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::models::typed::{agency_id::AgencyId, version::Version};
+
 use super::{concept::Concept, descriptions::Descriptions, link::Link, names::Names};
 
 pub type MetaDataSets = Box<[MetaDataSet]>;
@@ -9,9 +11,9 @@ pub type MetaDataSets = Box<[MetaDataSet]>;
 pub struct MetaDataSet {
     pub id: Box<str>,
     pub links: Option<Box<[Link]>>,
-    pub version: Box<str>,
+    pub version: Version,
     #[serde(rename = "agencyID")]
-    pub agency_id: Box<str>,
+    pub agency_id: AgencyId,
     pub is_external_reference: Option<bool>,
     pub is_final: bool,
     pub name: Box<str>,

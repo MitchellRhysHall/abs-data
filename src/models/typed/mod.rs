@@ -21,3 +21,4 @@ pub mod sdmx_request;
 pub mod semester;
 pub mod structure_id;
 pub mod structure_type;
+pub mod version;
