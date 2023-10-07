@@ -1,11 +1,12 @@
 use crate::{
     config::Config,
-    error_code::Result,
     models::typed::{
         datakey::DataKey, datakey_dimensions::DataKeyDimensions, frequency::Frequency,
         measure::Measure, region::Region,
     },
 };
+
+use crate::result::Result;
 
 pub struct DataKeyBuilder {
     measure: Vec<Measure>,

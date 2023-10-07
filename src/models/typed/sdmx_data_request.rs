@@ -1,12 +1,9 @@
-use crate::{
-    error_code::Result,
-    models::derived::{
-        data_sets::{DataSetWrapper, DataSets},
-        sdmx_response::SdmxResponse,
-    },
-};
-
 use super::sdmx_request::SdmxRequest;
+use crate::models::derived::{
+    data_sets::{DataSetWrapper, DataSets},
+    sdmx_response::SdmxResponse,
+};
+use crate::result::Result;
 
 pub struct SdmxDataRequest<'a> {
     request: SdmxRequest<'a>,

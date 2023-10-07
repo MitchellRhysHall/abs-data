@@ -1,7 +1,3 @@
-pub type Result<T> = std::result::Result<T, ErrorCode>;
-
-use std::num::ParseIntError;
-
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -40,7 +36,7 @@ pub enum ErrorCode {
     HashMapNoKeyValuesFound,
 
     #[error("Version string unknown character: {0}")]
-    VersionStringContainsUnknownChar(#[from] ParseIntError),
+    VersionStringContainsUnknownChar(#[from] std::num::ParseIntError),
 
     #[error("Version string length not exactly three: {0}")]
     VersionStringNotCorrectLength(usize),

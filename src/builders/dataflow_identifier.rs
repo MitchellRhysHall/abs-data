@@ -1,8 +1,8 @@
-use crate::error_code::Result;
 use crate::models::typed::dataflow_identifier::DataflowIdentifier;
 use crate::models::typed::dataflow_identifier_dimensions::DataflowIdentifierDimensions;
 use crate::models::typed::version::Version;
 use crate::models::typed::{agency_id::AgencyId, dataflow_id::DataflowId};
+use crate::result::Result;
 
 pub struct DataflowIdentifierBuilder<'a> {
     agency_id: Option<&'a AgencyId>,

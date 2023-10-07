@@ -1,5 +1,7 @@
-use crate::error_code::{ErrorCode, Result};
+use crate::error_code::ErrorCode;
 use url::Url;
+
+use crate::result::Result;
 
 pub struct UrlBuilder {
     base_url: Box<str>,

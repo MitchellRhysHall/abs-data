@@ -2,6 +2,7 @@ mod builders;
 mod config;
 mod error_code;
 mod models;
+mod result;
 
 #[cfg(test)]
 mod tests {

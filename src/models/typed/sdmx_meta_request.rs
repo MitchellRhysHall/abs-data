@@ -1,12 +1,11 @@
 use std::collections::HashMap;
 
+use super::sdmx_request::SdmxRequest;
+use crate::result::Result;
 use crate::{
     error_code::ErrorCode,
-    error_code::Result,
     models::derived::{meta_data_sets::MetaDataSets, sdmx_response::SdmxResponse},
 };
-
-use super::sdmx_request::SdmxRequest;
 
 pub struct SdmxMetaRequest<'a> {
     request: SdmxRequest<'a>,

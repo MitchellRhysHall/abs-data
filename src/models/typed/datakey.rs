@@ -1,9 +1,7 @@
-use crate::{
-    builders::datakey::DataKeyBuilder,
-    config::Config,
-    error_code::{ErrorCode, Result},
-};
+use crate::{builders::datakey::DataKeyBuilder, config::Config, error_code::ErrorCode};
 use std::fmt::{self, Display, Formatter};
+
+use crate::result::Result;
 
 use super::datakey_dimensions::DataKeyDimensions;
 

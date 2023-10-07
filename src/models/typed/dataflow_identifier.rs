@@ -1,13 +1,10 @@
 use std::fmt;
 
-use crate::{
-    error_code::ErrorCode,
-    error_code::Result,
-};
+use crate::error_code::ErrorCode;
 
-use super::{
-    dataflow_identifier_dimensions::DataflowIdentifierDimensions,
-};
+use crate::result::Result;
+
+use super::dataflow_identifier_dimensions::DataflowIdentifierDimensions;
 
 /// The dataflow identifier in {agencyId},{dataflowId},{version} format
 /// (eg. "ABS,CPI,1.0.0"). A list of all available dataflows can be returned

@@ -2,7 +2,8 @@ use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 use std::boxed::Box;
 use std::fmt;
 
-use crate::error_code::{ErrorCode, Result};
+use crate::error_code::ErrorCode;
+use crate::result::Result;
 
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Version {

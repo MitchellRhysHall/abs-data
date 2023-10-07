@@ -1,9 +1,8 @@
 use url::Url;
 
-use crate::{
-    config::Config, error_code::ErrorCode, error_code::Result,
-    models::derived::sdmx_response::SdmxResponse,
-};
+use crate::{config::Config, error_code::ErrorCode, models::derived::sdmx_response::SdmxResponse};
+
+use crate::result::Result;
 
 use super::sdmx_client::SdmxClient;
 
