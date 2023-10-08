@@ -1,6 +1,6 @@
 [package]
 name = "abs-data"
-version = "0.1.01"
+version = "0.1.1"
 edition = "2021"
 authors = ["Mitchell Rhys Hall"]
 repository = "https://github.com/MitchellRhysHall/abs-data"
