@@ -49,8 +49,7 @@ mod tests {
 
     #[tokio::test]
     async fn test2() -> Result<()> {
-        let dataflow_identifier =
-            DataflowIdentifierBuilder::new(DataflowId::POPULATION_CLOCK).build()?;
+        let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::CPI).build()?;
 
         let request_builder = SdmxDataRequestBuilder::new(&dataflow_identifier);
 
