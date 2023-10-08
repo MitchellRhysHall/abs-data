@@ -54,8 +54,6 @@ mod tests {
 
         let request = request_builder.build();
 
-        println!("{}", request.url());
-
         let response = request.send().await?;
 
         println!("{:?}", response);

@@ -6,7 +6,7 @@ This Rust library provides a convenient way to interact with the Australian Bure
 
 - **Builder Pattern for Requests:** Constructing requests is streamlined using builder types, allowing for a fluent and intuitive API.
 - **Strongly Typed Models:** Benefit from Rust's type system with strongly typed models for the ABS data, minimizing runtime errors.
-- **Ease of Use:** Designed to be straightforward and user-friendly, this library abstracts away much of the boilerplate associated with interacting with the ABS Data API in rust.
+- **Ease of Use:** This library simplifies interacting in the SDMX format, making it as convenient as common HTTP JSON APIs.
   
 ## Usage
 
@@ -20,13 +20,30 @@ abs_data = "0.1"
 Request and select by dataflow:
 
 ```rust
-use abs_data::builders::{
-    dataflow_identifier::DataflowIdentifierBuilder, sdmx_data_request::SdmxDataRequestBuilder,
+use abs_data::{
+    builders::{
+        dataflow_identifier::DataflowIdentifierBuilder, sdmx_data_request::SdmxDataRequestBuilder,
+        sdmx_meta_request::SdmxMetaRequestBuilder,
+    },
+    models::derived::{data_sets::DataSets, sdmx_response::SdmxResponse},
+    models::typed::{
+        dataflow_id::DataflowId, detail::Detail, period::Period, structure_type::StructureType,
+    },
 };
-use abs_data::models::typed::{dataflow_id::DataflowId, detail::Detail};
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn get_cpi_datasets() -> Result<SdmxResponse<DataSets>, Box<dyn std::error::Error>> {
+    let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::CPI).build()?;
+
+    let response = SdmxDataRequestBuilder::new(&dataflow_identifier)
+        .build()
+        .send()
+        .await?;
+
+    Ok(response)
+}
+
+async fn get_dataflows_then_dataset() -> Result<SdmxResponse<DataSets>, Box<dyn std::error::Error>>
+{
     let meta_response = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
         .build()
         .send()
@@ -34,26 +51,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let dataflow = &meta_response.data[10]; // Select desired dataflow
 
-    println!("{dataflow:?}");
+    let dataflow_identifier = DataflowIdentifierBuilder::new(&dataflow.id)
+        .agency_id(&dataflow.agency_id)
+        .version(&dataflow.version)
+        .build()?;
 
-    let dataflow_identifier =
-        DataflowIdentifierBuilder::new(&DataflowId::Specific(dataflow.id.clone()))
-            .agency_id(&dataflow.agency_id)
-            .version(&dataflow.version)
-            .build()?;
-
-    let response = SdmxDataRequestBuilder::new(&dataflow_identifier)
+    let data_response = SdmxDataRequestBuilder::new(&dataflow_identifier)
         .detail(&Detail::DataOnly)
-        .start_period(&DateGranularity::Year(2012))
-        .end_period(&DateGranularity::Year(2022))
+        .start_period(&Period::Year(2012))
+        .end_period(&Period::Year(2022))
         .build()
         .send()
         .await?;
 
-    println!("{response:?}");
-
-    Ok(())
+    Ok(data_response)
 }
 
 ```
-
