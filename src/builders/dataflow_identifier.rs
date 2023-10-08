@@ -1,17 +1,17 @@
+use crate::models::typed::agency_id::AgencyId;
 use crate::models::typed::dataflow_identifier::DataflowIdentifier;
 use crate::models::typed::dataflow_identifier_dimensions::DataflowIdentifierDimensions;
 use crate::models::typed::version::Version;
-use crate::models::typed::{agency_id::AgencyId, dataflow_id::DataflowId};
 use crate::result::Result;
 
 pub struct DataflowIdentifierBuilder<'a> {
     agency_id: Option<&'a AgencyId>,
-    dataflow_id: &'a DataflowId,
+    dataflow_id: &'a str,
     version: Option<&'a Version>,
 }
 
 impl<'a> DataflowIdentifierBuilder<'a> {
-    pub fn new(dataflow_id: &'a DataflowId) -> Self {
+    pub fn new(dataflow_id: &'a str) -> Self {
         DataflowIdentifierBuilder {
             agency_id: None,
             dataflow_id,

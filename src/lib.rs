@@ -15,10 +15,11 @@ mod tests {
             dataflow_id::DataflowId, date_granularity::DateGranularity, detail::Detail,
             structure_type::StructureType,
         },
+        result::Result,
     };
 
     #[tokio::test]
-    async fn send_request_with_all_details() -> Result<(), Box<dyn std::error::Error>> {
+    async fn test1() -> Result<()> {
         let meta_response = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
             .build()
             .send()
@@ -28,11 +29,10 @@ mod tests {
 
         println!("{dataflow:?}");
 
-        let dataflow_identifier =
-            DataflowIdentifierBuilder::new(&DataflowId::Specific(dataflow.id.clone()))
-                .agency_id(&dataflow.agency_id)
-                .version(&dataflow.version)
-                .build()?;
+        let dataflow_identifier = DataflowIdentifierBuilder::new(&dataflow.id)
+            .agency_id(&dataflow.agency_id)
+            .version(&dataflow.version)
+            .build()?;
 
         let response = SdmxDataRequestBuilder::new(&dataflow_identifier)
             .detail(&Detail::DataOnly)
@@ -43,6 +43,25 @@ mod tests {
             .await?;
 
         println!("{response:?}");
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test2() -> Result<()> {
+        let dataflow_identifier =
+            DataflowIdentifierBuilder::new(DataflowId::POPULATION_CLOCK).build()?;
+
+        let request_builder = SdmxDataRequestBuilder::new(&dataflow_identifier);
+
+        let request = request_builder.build();
+
+        println!("{}", request.url());
+        println!("{:?}", request.headers());
+
+        let response = request.send().await?;
+
+        println!("{:?}", response);
 
         Ok(())
     }

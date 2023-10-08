@@ -1,8 +1,5 @@
 use super::sdmx_request::SdmxRequest;
-use crate::models::derived::{
-    data_sets::{DataSetWrapper, DataSets},
-    sdmx_response::SdmxResponse,
-};
+use crate::models::derived::{data_sets::DataSets, sdmx_response::SdmxResponse};
 use crate::result::Result;
 
 pub struct SdmxDataRequest<'a> {
@@ -10,15 +7,16 @@ pub struct SdmxDataRequest<'a> {
 }
 
 impl<'a> SdmxDataRequest<'a> {
+    pub fn url(&self) -> &str {
+        self.request.url()
+    }
+
+    pub fn headers(&self) -> &'a [(&'a str, &'a str)] {
+        self.request.headers()
+    }
+
     pub async fn send(&self) -> Result<SdmxResponse<DataSets>> {
-        let raw = self.request.send::<DataSetWrapper>().await?;
-
-        let response: SdmxResponse<DataSets> = SdmxResponse {
-            data: raw.data.data_sets,
-            meta: raw.meta,
-        };
-
-        Ok(response)
+        Ok(self.request.send::<DataSets>().await?)
     }
 }
 

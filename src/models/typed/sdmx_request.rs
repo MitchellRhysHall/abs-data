@@ -23,6 +23,14 @@ impl<'a> SdmxRequest<'a> {
         }
     }
 
+    pub fn url(&self) -> &str {
+        self.url.as_ref()
+    }
+
+    pub fn headers(&self) -> &'a [(&'a str, &'a str)] {
+        self.headers
+    }
+
     pub async fn send<T>(&self) -> Result<SdmxResponse<T>>
     where
         T: serde::de::DeserializeOwned,

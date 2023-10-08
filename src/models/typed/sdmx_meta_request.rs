@@ -12,6 +12,14 @@ pub struct SdmxMetaRequest<'a> {
 }
 
 impl<'a> SdmxMetaRequest<'a> {
+    pub fn url(&self) -> &str {
+        self.request.url()
+    }
+
+    pub fn headers(&self) -> &'a [(&'a str, &'a str)] {
+        self.request.headers()
+    }
+
     pub async fn send(&self) -> Result<SdmxResponse<MetaDataSets>> {
         let mut raw = self
             .request
