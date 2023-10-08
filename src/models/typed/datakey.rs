@@ -18,21 +18,17 @@ impl DataKey {
         Self::try_from(str)
     }
 
-    pub fn builder() -> DataKeyBuilder {
-        DataKeyBuilder::new()
-    }
-
     pub fn no_filter() -> Self {
         Self {
             inner: "all".into(),
         }
     }
 
-    fn format_dimension<T: Display>(items: &[T]) -> String {
+    fn format_dimension<T: AsRef<str>>(items: &[T]) -> String {
         items
             .iter()
-            .map(|item| format!("{}", item))
-            .collect::<Vec<String>>()
+            .map(|item| item.as_ref())
+            .collect::<Vec<&str>>()
             .join("+")
     }
 }

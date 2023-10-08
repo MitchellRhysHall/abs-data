@@ -8,14 +8,14 @@ use crate::{
 
 use crate::result::Result;
 
-pub struct DataKeyBuilder {
-    measure: Vec<Measure>,
-    region: Vec<Region>,
-    frequency: Vec<Frequency>,
+pub struct DataKeyBuilder<'a> {
+    measure: Vec<Measure<'a>>,
+    region: Vec<Region<'a>>,
+    frequency: Vec<Frequency<'a>>,
     max_length: usize,
 }
 
-impl DataKeyBuilder {
+impl<'a> DataKeyBuilder<'a> {
     pub fn new() -> Self {
         Self {
             measure: Vec::new(),
@@ -29,17 +29,17 @@ impl DataKeyBuilder {
         self.max_length
     }
 
-    pub fn measure(mut self, measure: Measure) -> Self {
+    pub fn measure(mut self, measure: Measure<'a>) -> Self {
         self.measure.push(measure);
         self
     }
 
-    pub fn region(mut self, region: Region) -> Self {
+    pub fn region(mut self, region: Region<'a>) -> Self {
         self.region.push(region);
         self
     }
 
-    pub fn frequency(mut self, frequency: Frequency) -> Self {
+    pub fn frequency(mut self, frequency: Frequency<'a>) -> Self {
         self.frequency.push(frequency);
         self
     }

@@ -1,21 +1,18 @@
-use std::fmt::{self, Display, Formatter};
-
-use serde::{Deserialize, Serialize};
-use strum_macros::EnumIter;
-
-#[derive(
-    Debug, Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, EnumIter,
-)]
-pub enum Measure {
-    M1,
-    M2,
+pub struct Measure<'a> {
+    value: &'a str,
 }
 
-impl Display for Measure {
-    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        match self {
-            Measure::M1 => write!(f, "M1"),
-            Measure::M2 => write!(f, "M2"),
-        }
+impl<'a> Measure<'a> {
+    pub const M1: &str = "M1";
+    pub const M2: &str = "M2";
+
+    pub fn new(value: &'a str) -> Self {
+        Self { value }
+    }
+}
+
+impl<'a> AsRef<str> for Measure<'a> {
+    fn as_ref(&self) -> &'a str {
+        self.value
     }
 }

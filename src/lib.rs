@@ -56,7 +56,6 @@ mod tests {
         let request = request_builder.build();
 
         println!("{}", request.url());
-        println!("{:?}", request.headers());
 
         let response = request.send().await?;
 
