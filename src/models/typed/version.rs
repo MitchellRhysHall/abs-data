@@ -5,19 +5,23 @@ use std::fmt;
 use crate::error_code::ErrorCode;
 use crate::result::Result;
 
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Version {
     major: u8,
     minor: u8,
     patch: u8,
+    str: Box<str>,
 }
 
 impl Version {
+    pub const ONE: &str = "1.0.0";
+
     pub fn new(major: u8, minor: u8, patch: u8) -> Self {
         Version {
             major,
             minor,
             patch,
+            str: format!("{}{}{}", major, minor, patch).into(),
         }
     }
 }
@@ -28,7 +32,14 @@ impl Default for Version {
             major: 1,
             minor: 0,
             patch: 0,
+            str: Self::ONE.into(),
         }
+    }
+}
+
+impl AsRef<str> for Version {
+    fn as_ref(&self) -> &str {
+        &self.str
     }
 }
 
@@ -40,23 +51,25 @@ impl TryFrom<Box<str>> for Version {
         if parts.len() != 3 {
             return Err(ErrorCode::VersionStringNotCorrectLength(parts.len()));
         }
-        Ok(Version {
-            major: parts[0]
-                .parse()
-                .map_err(ErrorCode::VersionStringContainsUnknownChar)?,
-            minor: parts[1]
-                .parse()
-                .map_err(ErrorCode::VersionStringContainsUnknownChar)?,
-            patch: parts[2]
-                .parse()
-                .map_err(ErrorCode::VersionStringContainsUnknownChar)?,
-        })
+        let major = parts[0]
+            .parse()
+            .map_err(ErrorCode::VersionStringContainsUnknownChar)?;
+
+        let minor = parts[1]
+            .parse()
+            .map_err(ErrorCode::VersionStringContainsUnknownChar)?;
+
+        let patch = parts[2]
+            .parse()
+            .map_err(ErrorCode::VersionStringContainsUnknownChar)?;
+
+        Ok(Version::new(major, minor, patch))
     }
 }
 
 impl fmt::Display for Version {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}.{}.{}", self.major, self.minor, self.patch)
+        write!(f, "{}", self.str)
     }
 }
 

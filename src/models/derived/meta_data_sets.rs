@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::models::typed::{agency_id::AgencyId, version::Version};
+use crate::models::typed::version::Version;
 
 use super::{concept::Concept, descriptions::Descriptions, link::Link, names::Names};
 
@@ -13,7 +13,7 @@ pub struct MetaDataSet {
     pub links: Option<Box<[Link]>>,
     pub version: Version,
     #[serde(rename = "agencyID")]
-    pub agency_id: AgencyId,
+    pub agency_id: Box<str>,
     pub is_external_reference: Option<bool>,
     pub is_final: bool,
     pub name: Box<str>,

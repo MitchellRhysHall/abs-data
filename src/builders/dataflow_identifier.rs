@@ -5,7 +5,7 @@ use crate::models::typed::version::Version;
 use crate::result::Result;
 
 pub struct DataflowIdentifierBuilder<'a> {
-    agency_id: Option<&'a AgencyId>,
+    agency_id: Option<&'a str>,
     dataflow_id: &'a str,
     version: Option<&'a Version>,
 }
@@ -19,7 +19,7 @@ impl<'a> DataflowIdentifierBuilder<'a> {
         }
     }
 
-    pub fn agency_id(mut self, agency_id: &'a AgencyId) -> Self {
+    pub fn agency_id(mut self, agency_id: &'a str) -> Self {
         self.agency_id = Some(agency_id);
         self
     }

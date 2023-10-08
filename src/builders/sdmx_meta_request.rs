@@ -11,7 +11,7 @@ use crate::{
 pub struct SdmxMetaRequestBuilder<'a> {
     base_url: &'a str,
     structure_type: &'a StructureType,
-    agency_id: Option<&'a AgencyId>,
+    agency_id: Option<&'a AgencyId<'a>>,
     detail: Option<&'a MetaDetail>,
     structure_id: Option<&'a StructureId>,
     structure_version: Option<&'a Version>,
@@ -65,9 +65,9 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
             UrlBuilder::new(self.base_url).add_path_segment(self.structure_type.to_string());
 
         if let Some(agency_id) = self.agency_id {
-            url_builder = url_builder.add_path_segment(agency_id.to_string());
+            url_builder = url_builder.add_path_segment(agency_id.as_ref().to_string());
         } else {
-            url_builder = url_builder.add_path_segment(AgencyId::default().to_string());
+            url_builder = url_builder.add_path_segment(AgencyId::ABS.to_string());
         }
 
         if let Some(structure_id) = self.structure_id {
