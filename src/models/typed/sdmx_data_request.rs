@@ -16,7 +16,7 @@ impl<'a> SdmxDataRequest<'a> {
     }
 
     pub async fn send(&self) -> Result<SdmxResponse<DataSets>> {
-        Ok(self.request.send::<DataSets>().await?)
+        self.request.send::<DataSets>().await
     }
 }
 

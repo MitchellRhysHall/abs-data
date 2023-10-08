@@ -1,4 +1,4 @@
-use crate::{builders::datakey::DataKeyBuilder, config::Config, error_code::ErrorCode};
+use crate::{config::Config, error_code::ErrorCode};
 use std::fmt::{self, Display, Formatter};
 
 use crate::result::Result;
