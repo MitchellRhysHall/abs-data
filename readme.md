@@ -8,7 +8,7 @@ This Rust library provides a convenient way to interact with the Australian Bure
 - **Strongly Typed Models:** Benefit from Rust's type system with strongly typed models for the ABS data, minimizing runtime errors.
 - **Ease of Use:** This library simplifies interacting in the SDMX format, making it as convenient as common HTTP JSON APIs.
   
-## Usage
+## Examples
 
 Add this to your `Cargo.toml`:
 
@@ -17,18 +17,15 @@ Add this to your `Cargo.toml`:
 abs_data = "0.1"
 ```
 
-Request and select by dataflow:
+Getting all cpi datasets:
 
 ```rust
 use abs_data::{
     builders::{
-        dataflow_identifier::DataflowIdentifierBuilder, sdmx_data_request::SdmxDataRequestBuilder,
-        sdmx_meta_request::SdmxMetaRequestBuilder,
+        dataflow_identifier::DataflowIdentifierBuilder, sdmx_data_request::SdmxDataRequestBuilder
     },
     models::derived::{data_sets::DataSets, sdmx_response::SdmxResponse},
-    models::typed::{
-        dataflow_id::DataflowId, detail::Detail, period::Period, structure_type::StructureType,
-    },
+    models::typed::dataflow_id::DataflowId,
 };
 
 async fn get_cpi_datasets() -> Result<SdmxResponse<DataSets>, Box<dyn std::error::Error>> {
@@ -41,6 +38,21 @@ async fn get_cpi_datasets() -> Result<SdmxResponse<DataSets>, Box<dyn std::error
 
     Ok(response)
 }
+```
+
+Getting all metadata dataflows and then a dataset:
+
+```rust
+use abs_data::{
+    builders::{
+        dataflow_identifier::DataflowIdentifierBuilder, sdmx_data_request::SdmxDataRequestBuilder,
+        sdmx_meta_request::SdmxMetaRequestBuilder,
+    },
+    models::derived::{data_sets::DataSets, sdmx_response::SdmxResponse},
+    models::typed::{
+        dataflow_id::DataflowId, detail::Detail, period::Period, structure_type::StructureType,
+    },
+};
 
 async fn get_dataflows_then_dataset() -> Result<SdmxResponse<DataSets>, Box<dyn std::error::Error>>
 {
