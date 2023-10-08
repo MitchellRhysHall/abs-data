@@ -6,6 +6,7 @@ authors = ["Mitchell Rhys Hall"]
 repository = "https://github.com/MitchellRhysHall/abs-data"
 license = "MIT"
 description = "Harness the Australian Bureau of Statistics SDMX API for data extraction and analysis with this intuitive library."
+readme = "readme.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
