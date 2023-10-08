@@ -1,3 +1,6 @@
+# Disclaimer
+This library has not been endorsed, sponsored, or officially recognized by the Australian Government in any capacity.
+
 # ABS Data API Rust Client
 
 This Rust library provides a convenient way to interact with the Australian Bureau of Statistics (ABS) Data API [https://api.gov.au/assets/APIs/abs/DataAPI.openapi.html](https://api.gov.au/assets/APIs/abs/DataAPI.openapi.html). Utilizing builder types, this library allows fluent, type-safe requests to the API.
@@ -20,63 +23,42 @@ abs_data = "0.1"
 Getting all cpi datasets:
 
 ```rust
-use abs_data::{
-    builders::{
-        dataflow_identifier::DataflowIdentifierBuilder, sdmx_data_request::SdmxDataRequestBuilder
-    },
-    models::derived::{data_sets::DataSets, sdmx_response::SdmxResponse},
-    models::typed::dataflow_id::DataflowId,
-};
+use abs_data::*;
 
-async fn get_cpi_datasets() -> Result<SdmxResponse<DataSets>, Box<dyn std::error::Error>> {
-    let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::CPI).build()?;
+let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::CPI).build()?;
 
-    let response = SdmxDataRequestBuilder::new(&dataflow_identifier)
-        .build()
-        .send()
-        .await?;
+let response = SdmxDataRequestBuilder::new(&dataflow_identifier)
+    .build()
+    .send()
+    .await?;
 
-    Ok(response)
-}
+Ok(response)
 ```
 
 Getting all metadata dataflows and then a dataset:
 
 ```rust
-use abs_data::{
-    builders::{
-        dataflow_identifier::DataflowIdentifierBuilder, sdmx_data_request::SdmxDataRequestBuilder,
-        sdmx_meta_request::SdmxMetaRequestBuilder,
-    },
-    models::derived::{data_sets::DataSets, sdmx_response::SdmxResponse},
-    models::typed::{
-        dataflow_id::DataflowId, detail::Detail, period::Period, structure_type::StructureType,
-    },
-};
+use abs_data::*;
 
-async fn get_dataflows_then_dataset() -> Result<SdmxResponse<DataSets>, Box<dyn std::error::Error>>
-{
-    let meta_response = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
-        .build()
-        .send()
-        .await?;
+let meta_response = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
+    .build()
+    .send()
+    .await?;
 
-    let dataflow = &meta_response.data[10]; // Select desired dataflow
+let dataflow = &meta_response.data[10]; // Select desired dataflow
 
-    let dataflow_identifier = DataflowIdentifierBuilder::new(&dataflow.id)
-        .agency_id(&dataflow.agency_id)
-        .version(&dataflow.version)
-        .build()?;
+let dataflow_identifier = DataflowIdentifierBuilder::new(&dataflow.id)
+    .agency_id(&dataflow.agency_id)
+    .version(&dataflow.version)
+    .build()?;
 
-    let data_response = SdmxDataRequestBuilder::new(&dataflow_identifier)
-        .detail(&Detail::DataOnly)
-        .start_period(&Period::Year(2012))
-        .end_period(&Period::Year(2022))
-        .build()
-        .send()
-        .await?;
+let data_response = SdmxDataRequestBuilder::new(&dataflow_identifier)
+    .detail(&Detail::DataOnly)
+    .start_period(&Period::Year(2012))
+    .end_period(&Period::Year(2022))
+    .build()
+    .send()
+    .await?;
 
-    Ok(data_response)
-}
-
+Ok(data_response)
 ```
