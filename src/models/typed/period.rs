@@ -8,14 +8,14 @@ use super::{month::Month, quarter::Quarter, semester::Semester};
 #[derive(
     Debug, Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, EnumIter,
 )]
-pub enum DateGranularity {
+pub enum Period {
     Year(u16),
     YearSemester(u16, Semester),
     YearQuarter(u16, Quarter),
     YearMonth(u16, Month),
 }
 
-impl Display for DateGranularity {
+impl Display for Period {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
             Self::Year(year) => write!(f, "{:04}", year),

@@ -12,8 +12,7 @@ mod tests {
             sdmx_data_request::SdmxDataRequestBuilder, sdmx_meta_request::SdmxMetaRequestBuilder,
         },
         models::typed::{
-            dataflow_id::DataflowId, date_granularity::DateGranularity, detail::Detail,
-            structure_type::StructureType,
+            dataflow_id::DataflowId, detail::Detail, period::Period, structure_type::StructureType,
         },
         result::Result,
     };
@@ -36,8 +35,8 @@ mod tests {
 
         let response = SdmxDataRequestBuilder::new(&dataflow_identifier)
             .detail(&Detail::DataOnly)
-            .start_period(&DateGranularity::Year(2012))
-            .end_period(&DateGranularity::Year(2022))
+            .start_period(&Period::Year(2012))
+            .end_period(&Period::Year(2022))
             .build()
             .send()
             .await?;

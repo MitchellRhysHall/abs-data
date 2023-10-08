@@ -2,10 +2,9 @@ use crate::{
     builders::url::UrlBuilder,
     config::Config,
     models::typed::{
-        dataflow_identifier::DataflowIdentifier, datakey::DataKey,
-        date_granularity::DateGranularity, detail::Detail,
-        dimension_at_observation::DimensionAtObservation, sdmx_data_request::SdmxDataRequest,
-        sdmx_request::SdmxRequest,
+        dataflow_identifier::DataflowIdentifier, datakey::DataKey, detail::Detail,
+        dimension_at_observation::DimensionAtObservation, period::Period,
+        sdmx_data_request::SdmxDataRequest, sdmx_request::SdmxRequest,
     },
 };
 
@@ -14,8 +13,8 @@ pub struct SdmxDataRequestBuilder<'a> {
     path: &'a str,
     dataflow_identifier: &'a DataflowIdentifier,
     data_key: Option<&'a DataKey>,
-    start_period: Option<&'a DateGranularity>,
-    end_period: Option<&'a DateGranularity>,
+    start_period: Option<&'a Period>,
+    end_period: Option<&'a Period>,
     detail: Option<&'a Detail>,
     dimension_at_observation: Option<&'a DimensionAtObservation>,
     key: Option<&'a str>,
@@ -43,12 +42,12 @@ impl<'a> SdmxDataRequestBuilder<'a> {
         self
     }
 
-    pub fn start_period(mut self, start_period: &'a DateGranularity) -> Self {
+    pub fn start_period(mut self, start_period: &'a Period) -> Self {
         self.start_period = Some(start_period);
         self
     }
 
-    pub fn end_period(mut self, end_period: &'a DateGranularity) -> Self {
+    pub fn end_period(mut self, end_period: &'a Period) -> Self {
         self.end_period = Some(end_period);
         self
     }
