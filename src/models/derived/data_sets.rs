@@ -8,7 +8,7 @@ use super::{data::Data, link::Link, structure::Structure};
 #[serde(rename_all = "camelCase")]
 pub struct DataSets {
     pub data_sets: Box<[DataSet]>,
-    pub structure: Structure,
+    pub structure: Option<Structure>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

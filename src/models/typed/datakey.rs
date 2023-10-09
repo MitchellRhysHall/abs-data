@@ -76,7 +76,7 @@ impl TryFrom<DataKeyDimensions<'_>> for DataKey {
         let byte_len = format!("{}", key).len();
 
         if byte_len > Config::DATA_KEY_MAX_LENGTH {
-            return Err(ErrorCode::DataKeyLengthExceeded(byte_len));
+            return Err(ErrorCode::DataKeyLengthIncorrect(byte_len));
         };
 
         Ok(key)
@@ -87,15 +87,19 @@ impl TryFrom<&str> for DataKey {
     type Error = ErrorCode;
 
     fn try_from(str: &str) -> Result<Self> {
-        let items: Box<[&str]> = str.split('.').collect();
+        let dot_count = str.matches('.').count();
 
-        for item in items.iter() {
-            if item.parse::<u8>().is_err() {
-                return Err(ErrorCode::DataKeyContainsNonNumber((*item).into()));
-            }
+        if dot_count != Config::DATA_KEY_REQUIRED_DOT_COUNT {
+            return Err(ErrorCode::DataKeyLengthIncorrect(str.len()));
         }
 
-        let key = DataKey::new(str);
+        let key = Self { inner: str.into() };
+
+        let byte_len = format!("{}", key).len();
+
+        if byte_len > Config::DATA_KEY_MAX_LENGTH {
+            return Err(ErrorCode::DataKeyLengthIncorrect(byte_len));
+        };
 
         Ok(key)
     }

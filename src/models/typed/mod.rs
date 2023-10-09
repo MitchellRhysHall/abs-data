@@ -1,3 +1,4 @@
+pub mod adjustment_type;
 pub mod agency_id;
 pub mod dataflow_id;
 pub mod dataflow_identifier;

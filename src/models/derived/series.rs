@@ -12,4 +12,5 @@ pub struct Series {
     pub relationship: Option<Relationship>,
     pub values: Box<[Value]>,
     pub annotations: Option<Box<[i64]>>,
+    pub key_position: Option<u8>,
 }

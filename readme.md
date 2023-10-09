@@ -1,9 +1,11 @@
-# Disclaimer
-This library has not been endorsed, sponsored, or officially recognized by the Australian Government in any capacity.
-
 # ABS Data API Rust Client
 
 This Rust library provides a convenient way to interact with the Australian Bureau of Statistics (ABS) Data API [https://api.gov.au/assets/APIs/abs/DataAPI.openapi.html](https://api.gov.au/assets/APIs/abs/DataAPI.openapi.html). Utilizing builder types, this library allows fluent, type-safe requests to the API.
+
+## Disclaimer
+
+- **Unofficial:** This library has not been endorsed, sponsored, or officially recognized by the Australian Government in any capacity.
+- **Alpha** This library is currently alpha stage and incomplete. Additionally, the API its built on is in beta.
 
 ## Features
 

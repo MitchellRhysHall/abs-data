@@ -24,7 +24,7 @@ pub enum ErrorCode {
     UrlCannotBeABase,
 
     #[error("Data key length cannot be larger than {0}")]
-    DataKeyLengthExceeded(usize),
+    DataKeyLengthIncorrect(usize),
 
     #[error("Data key contains non number: {0}")]
     DataKeyContainsNonNumber(Box<str>),

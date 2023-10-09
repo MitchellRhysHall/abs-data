@@ -36,6 +36,7 @@ impl<'a> SdmxMetaRequest<'a> {
         let response: SdmxResponse<MetaDataSets> = SdmxResponse {
             data: meta_data_sets,
             meta: raw.meta,
+            structure: raw.structure,
         };
 
         Ok(response)
