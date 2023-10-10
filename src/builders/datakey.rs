@@ -1,58 +1,36 @@
-use crate::{
-    config::Config,
-    models::typed::{
-        datakey::DataKey, datakey_dimensions::DataKeyDimensions, frequency::Frequency,
-        measure::Measure, region::Region,
-    },
-};
+use std::fmt::Display;
 
-use crate::result::Result;
+use crate::models::typed::{datakey::DataKey, datakey_dimension::DataKeyDimension};
 
-pub struct DataKeyBuilder<'a> {
-    measure: Vec<Measure<'a>>,
-    region: Vec<Region<'a>>,
-    frequency: Vec<Frequency<'a>>,
-    max_length: usize,
+pub struct DataKeyBuilder {
+    dimensions: [Box<str>; 5],
 }
 
-impl<'a> DataKeyBuilder<'a> {
+impl DataKeyBuilder {
     pub fn new() -> Self {
         Self {
-            measure: Vec::new(),
-            region: Vec::new(),
-            frequency: Vec::new(),
-            max_length: Config::DATA_KEY_MAX_LENGTH,
+            dimensions: ["".into(), "".into(), "".into(), "".into(), "".into()],
         }
     }
 
-    pub fn max_length(&self) -> usize {
-        self.max_length
-    }
+    pub fn add(mut self, dimension: DataKeyDimension) -> Self {
+        match dimension {
+            DataKeyDimension::U8(i, v) => self.dimensions[i as usize] = v.to_string().into(),
+            DataKeyDimension::U16(i, v) => self.dimensions[i as usize] = v.to_string().into(),
+            DataKeyDimension::U32(i, v) => self.dimensions[i as usize] = v.to_string().into(),
+            DataKeyDimension::U64(i, v) => self.dimensions[i as usize] = v.to_string().into(),
+            DataKeyDimension::Str(i, v) => self.dimensions[i as usize] = v.to_string().into(),
+        }
 
-    pub fn measure(mut self, measure: Measure<'a>) -> Self {
-        self.measure.push(measure);
+        println!("{:?}", self.dimensions);
         self
     }
 
-    pub fn region(mut self, region: Region<'a>) -> Self {
-        self.region.push(region);
-        self
-    }
+    pub fn build(self) -> DataKey {
+        let str = self.dimensions.join(".");
+        println!("{str}");
+        let key = DataKey::parse(&str).expect("should always be valid");
 
-    pub fn frequency(mut self, frequency: Frequency<'a>) -> Self {
-        self.frequency.push(frequency);
-        self
-    }
-
-    pub fn build(self) -> Result<DataKey> {
-        let dimensions = DataKeyDimensions {
-            measure: &self.measure,
-            region: &self.region,
-            frequency: &self.frequency,
-        };
-
-        let key = DataKey::try_from(dimensions)?;
-
-        Ok(key)
+        key
     }
 }
