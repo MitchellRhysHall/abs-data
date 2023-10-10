@@ -5,7 +5,7 @@ This Rust library provides a convenient way to interact with the Australian Bure
 ## Disclaimer
 
 - **Unofficial:** This library has not been endorsed, sponsored, or officially recognized by the Australian Government in any capacity.
-- **Alpha** This library is currently alpha stage and incomplete. Additionally, the API its built on is in beta.
+- **Alpha:** This library is currently alpha stage and incomplete. Additionally, the API its built on is in beta.
 
 ## Features
 
