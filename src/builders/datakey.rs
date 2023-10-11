@@ -1,4 +1,4 @@
-use std::fmt::Display;
+
 
 use crate::models::typed::{datakey::DataKey, datakey_dimension::DataKeyDimension};
 
@@ -29,8 +29,8 @@ impl DataKeyBuilder {
     pub fn build(self) -> DataKey {
         let str = self.dimensions.join(".");
         println!("{str}");
-        let key = DataKey::parse(&str).expect("should always be valid");
+        
 
-        key
+        DataKey::parse(&str).expect("should always be valid")
     }
 }

@@ -2,7 +2,7 @@
 mod tests {
     use abs_data::{
         builders::{
-            dataflow_identifier::DataflowIdentifierBuilder, datakey::DataKeyBuilder,
+            dataflow_identifier::DataflowIdentifierBuilder,
             sdmx_data_request::SdmxDataRequestBuilder, sdmx_meta_request::SdmxMetaRequestBuilder,
         },
         models::typed::{
@@ -26,7 +26,7 @@ mod tests {
             .version(&dataflow.version)
             .build()?;
 
-        let response = SdmxDataRequestBuilder::new(&dataflow_identifier)
+        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
             .detail(&Detail::DataOnly)
             .start_period(&Period::Year(2012))
             .end_period(&Period::Year(2022))
@@ -58,7 +58,7 @@ mod tests {
 
         let dataflow_identifier = DataflowIdentifierBuilder::new(dataflow).build()?;
 
-        let response = SdmxDataRequestBuilder::new(&dataflow_identifier)
+        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
             .detail(&Detail::SeriesKeysOnly)
             .build()
             .send()
@@ -71,7 +71,7 @@ mod tests {
     async fn with_parse_datakey() -> Result<()> {
         let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::CPI).build()?;
 
-        let response = SdmxDataRequestBuilder::new(&dataflow_identifier)
+        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
             .data_key(&DataKey::parse("1.40066.10.8.Q")?)
             .detail(&Detail::DataOnly)
             .build()
