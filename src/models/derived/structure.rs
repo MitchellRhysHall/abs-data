@@ -5,7 +5,7 @@ use super::{
     dimensions::Dimensions, names::Names,
 };
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Structure {
     pub name: Box<str>,

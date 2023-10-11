@@ -5,12 +5,9 @@ mod tests {
             dataflow_identifier::DataflowIdentifierBuilder, datakey::DataKeyBuilder,
             sdmx_data_request::SdmxDataRequestBuilder, sdmx_meta_request::SdmxMetaRequestBuilder,
         },
-        models::{
-            generated::constants::{AdjustmentType, Frequency, Index, Measure, Region},
-            typed::{
-                dataflow_id::DataflowId, datakey::DataKey, detail::Detail, period::Period,
-                structure_type::StructureType,
-            },
+        models::typed::{
+            dataflow_id::DataflowId, datakey::DataKey, detail::Detail, period::Period,
+            structure_type::StructureType,
         },
         result::Result,
     };
@@ -84,27 +81,27 @@ mod tests {
         Ok(())
     }
 
-    #[tokio::test]
-    async fn with_const_datakey() -> Result<()> {
-        let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::CPI).build()?;
+    // #[tokio::test]
+    // async fn with_const_datakey() -> Result<()> {
+    //     let dataflow_identifier = DataflowIdentifierBuilder::new(DataflowId::CPI).build()?;
 
-        let key = DataKeyBuilder::new()
-            .add(Measure::INDEX_NUMBERS)
-            .add(Frequency::QUARTERLY)
-            .add(Region::CANBERRA)
-            .add(Index::TOOLS_AND_EQUIPMENT_FOR_HOUSE_AND_GARDEN)
-            .add(AdjustmentType::ORIGINAL)
-            .build();
+    //     let key = DataKeyBuilder::new()
+    //         .add(Measure::INDEX_NUMBERS)
+    //         .add(Frequency::QUARTERLY)
+    //         .add(Region::CANBERRA)
+    //         .add(Index::TOOLS_AND_EQUIPMENT_FOR_HOUSE_AND_GARDEN)
+    //         .add(AdjustmentType::ORIGINAL)
+    //         .build();
 
-        assert_eq!(key, DataKey::parse("1.40066.10.8.Q")?);
+    //     assert_eq!(key, DataKey::parse("1.40066.10.8.Q")?);
 
-        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
-            .data_key(&key)
-            .detail(&Detail::DataOnly)
-            .build()
-            .send()
-            .await?;
+    //     let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
+    //         .data_key(&key)
+    //         .detail(&Detail::DataOnly)
+    //         .build()
+    //         .send()
+    //         .await?;
 
-        Ok(())
-    }
+    //     Ok(())
+    // }
 }

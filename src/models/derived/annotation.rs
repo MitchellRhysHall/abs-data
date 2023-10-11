@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::texts::Texts;
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Annotation {
     #[serde(rename = "type")]

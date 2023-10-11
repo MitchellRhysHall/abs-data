@@ -6,7 +6,7 @@ use super::{concept::Concept, descriptions::Descriptions, link::Link, names::Nam
 
 pub type MetaDataSets = Box<[MetaDataSet]>;
 
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Default, Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MetaDataSet {
     pub id: Box<str>,
