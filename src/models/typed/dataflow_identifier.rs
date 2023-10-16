@@ -1,63 +1,56 @@
-use std::fmt;
-
-use crate::error_code::ErrorCode;
-
-use crate::result::Result;
-
-use super::dataflow_identifier_dimensions::DataflowIdentifierDimensions;
+use super::version::Version;
 
 /// The dataflow identifier in {agencyId},{dataflowId},{version} format
 /// (eg. "ABS,CPI,1.0.0"). A list of all available dataflows can be returned
 /// using the GET /{structureType}/{agencyId} operation.
-pub struct DataflowIdentifier {
-    inner: Box<str>,
+pub struct DataflowIdentifier<'a> {
+    agency_id: Option<&'a str>,
+    structure_id: &'a str,
+    version: Option<&'a Version>,
+    key: Box<str>,
 }
 
-impl DataflowIdentifier {
-    // Can create from invalid state
-    pub fn new(str: &str) -> Self {
-        Self { inner: str.into() }
+impl<'a> DataflowIdentifier<'a> {
+    fn format_key(
+        agency_id: Option<&'a str>,
+        structure_id: &'a str,
+        version: Option<&'a Version>,
+    ) -> Box<str> {
+        [
+            agency_id.as_ref().unwrap_or(&"ABS"),
+            structure_id,
+            version.unwrap_or(&Version::default()).as_ref(),
+        ]
+        .join(",")
+        .into()
     }
-}
 
-impl AsRef<str> for DataflowIdentifier {
-    fn as_ref(&self) -> &str {
-        &self.inner
-    }
-}
-
-impl fmt::Display for DataflowIdentifier {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.inner)
-    }
-}
-
-impl TryFrom<DataflowIdentifierDimensions<'_>> for DataflowIdentifier {
-    type Error = ErrorCode;
-
-    fn try_from(dimensions: DataflowIdentifierDimensions) -> Result<Self> {
-        let mut dimensions_vec = Vec::new();
-
-        if let Some(agency_id) = dimensions.agency_id {
-            dimensions_vec.push(agency_id.as_ref());
-        } else {
-            dimensions_vec.push("ABS");
+    pub fn new(
+        agency_id: Option<&'a str>,
+        structure_id: &'a str,
+        version: Option<&'a Version>,
+    ) -> Self {
+        Self {
+            agency_id,
+            structure_id,
+            version,
+            key: Self::format_key(agency_id, structure_id, version),
         }
+    }
 
-        dimensions_vec.push(dimensions.dataflow_id);
+    pub fn agency_id(&self) -> Option<&str> {
+        self.agency_id
+    }
 
-        if let Some(version) = dimensions.version {
-            dimensions_vec.push(version.as_ref());
-        } else {
-            dimensions_vec.push("1.0.0");
-        }
+    pub fn structure_id(&self) -> &str {
+        self.structure_id
+    }
 
-        let inner = dimensions_vec.join(",");
+    pub fn version(&self) -> Option<&Version> {
+        self.version
+    }
 
-        let dataflow_identifier = DataflowIdentifier {
-            inner: inner.into(),
-        };
-
-        Ok(dataflow_identifier)
+    pub fn key(&self) -> &str {
+        &self.key
     }
 }

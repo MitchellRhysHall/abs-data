@@ -15,7 +15,7 @@ pub enum Reference {
     Children,
     Descendants,
     All,
-    Specific(StructureType),
+    StructureType(StructureType),
 }
 
 impl<'a> Display for Reference {
@@ -27,7 +27,7 @@ impl<'a> Display for Reference {
             Self::Children => write!(f, "children"),
             Self::Descendants => write!(f, "descendants"),
             Self::All => write!(f, "all"),
-            Self::Specific(structure_type) => write!(f, "{}", structure_type),
+            Self::StructureType(structure_type) => write!(f, "{}", structure_type),
         }
     }
 }

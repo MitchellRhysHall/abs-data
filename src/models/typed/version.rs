@@ -14,15 +14,17 @@ pub struct Version {
 }
 
 impl Version {
-    pub const ONE: &str = "1.0.0";
-
     pub fn new(major: u8, minor: u8, patch: u8) -> Self {
         Version {
             major,
             minor,
             patch,
-            str: format!("{}{}{}", major, minor, patch).into(),
+            str: format!("{}.{}.{}", major, minor, patch).into(),
         }
+    }
+
+    pub fn one() -> Self {
+        Version::new(1, 0, 0)
     }
 }
 
@@ -32,7 +34,7 @@ impl Default for Version {
             major: 1,
             minor: 0,
             patch: 0,
-            str: Self::ONE.into(),
+            str: Self::one().to_string().into(),
         }
     }
 }

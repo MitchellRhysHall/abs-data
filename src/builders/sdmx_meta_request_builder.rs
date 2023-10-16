@@ -1,19 +1,18 @@
 use crate::{
-    builders::url::UrlBuilder,
+    builders::url_builder::UrlBuilder,
     config::Config,
     models::typed::{
-        agency_id::AgencyId, meta_detail::MetaDetail, reference::Reference,
-        sdmx_meta_request::SdmxMetaRequest, sdmx_request::SdmxRequest, structure_id::StructureId,
-        structure_type::StructureType, version::Version,
+        meta_detail::MetaDetail, reference::Reference, sdmx_meta_request::SdmxMetaRequest,
+        sdmx_request::SdmxRequest, structure_type::StructureType, version::Version,
     },
 };
 
 pub struct SdmxMetaRequestBuilder<'a> {
     base_url: &'a str,
     structure_type: &'a StructureType,
-    agency_id: Option<&'a AgencyId<'a>>,
+    agency_id: Option<&'a str>,
     detail: Option<&'a MetaDetail>,
-    structure_id: Option<&'a StructureId>,
+    structure_id: Option<&'a str>,
     structure_version: Option<&'a Version>,
     references: Option<&'a Reference>,
     key: Option<&'a str>,
@@ -40,7 +39,12 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
         self
     }
 
-    pub fn structure_id(mut self, structure_id: &'a StructureId) -> Self {
+    pub fn agency_id(mut self, agency_id: &'a str) -> Self {
+        self.agency_id = Some(agency_id);
+        self
+    }
+
+    pub fn structure_id(mut self, structure_id: &'a str) -> Self {
         self.structure_id = Some(structure_id);
         self
     }
@@ -50,7 +54,7 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
         self
     }
 
-    pub fn references(mut self, references: &'a Reference) -> Self {
+    pub fn reference(mut self, references: &'a Reference) -> Self {
         self.references = Some(references);
         self
     }
@@ -65,9 +69,9 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
             UrlBuilder::new(self.base_url).add_path_segment(self.structure_type.to_string());
 
         if let Some(agency_id) = self.agency_id {
-            url_builder = url_builder.add_path_segment(agency_id.as_ref().to_string());
+            url_builder = url_builder.add_path_segment(agency_id);
         } else {
-            url_builder = url_builder.add_path_segment(AgencyId::ABS.to_string());
+            url_builder = url_builder.add_path_segment("ABS");
         }
 
         if let Some(structure_id) = self.structure_id {

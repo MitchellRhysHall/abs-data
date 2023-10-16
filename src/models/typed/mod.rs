@@ -1,10 +1,5 @@
-pub mod adjustment_type;
-pub mod agency_id;
-pub mod dataflow_id;
 pub mod dataflow_identifier;
-pub mod dataflow_identifier_dimensions;
 pub mod datakey;
-pub mod datakey_dimension;
 pub mod detail;
 pub mod dimension_at_observation;
 pub mod meta_detail;
@@ -17,6 +12,5 @@ pub mod sdmx_data_request;
 pub mod sdmx_meta_request;
 pub mod sdmx_request;
 pub mod semester;
-pub mod structure_id;
 pub mod structure_type;
 pub mod version;

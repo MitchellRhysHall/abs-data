@@ -8,7 +8,7 @@ pub struct Concept {
     pub id: Box<str>,
     pub name: Box<str>,
     pub names: Names,
-    pub description: Option<String>,
+    pub description: Option<Box<str>>,
     pub descriptions: Option<Descriptions>,
     #[serde(default)]
     pub annotations: Vec<Annotation>,

@@ -1,6 +1,6 @@
 [package]
 name = "abs-data"
-version = "0.1.5"
+version = "0.2.0"
 edition = "2021"
 authors = ["Mitchell Rhys Hall"]
 repository = "https://github.com/MitchellRhysHall/abs-data"
@@ -19,4 +19,3 @@ tokio = { version = "1.32", features = ["macros", "rt", "rt-multi-thread"] }
 url = "2.4"
 strum = { version = "0.25", features = ["derive"] }
 strum_macros = "0.25"
-

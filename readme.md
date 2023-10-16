@@ -9,9 +9,8 @@ This Rust library provides a convenient way to interact with the Australian Bure
 
 ## Features
 
-- **Builder Pattern for Requests:** Constructing requests is streamlined using builder types, allowing for a fluent and intuitive API.
-- **Strongly Typed Models:** Benefit from Rust's type system with strongly typed models for the ABS data, minimizing runtime errors.
-- **Cached Metadata** Reduce network roundtrips by using many const definitions set at compile-time.
+- **Builder Pattern for Requests:** Constructing requests is fluent with builder types.
+- **Strongly Typed Models:** Strongly typed models for the ABS interface, minimizing runtime errors.
   
 ## Examples
 

@@ -1,5 +1,5 @@
 use crate::{
-    builders::url::UrlBuilder,
+    builders::url_builder::UrlBuilder,
     config::Config,
     models::typed::{
         dataflow_identifier::DataflowIdentifier, datakey::DataKey, detail::Detail,
@@ -11,7 +11,7 @@ use crate::{
 pub struct SdmxDataRequestBuilder<'a> {
     base_url: &'a str,
     path: &'a str,
-    dataflow_identifier: &'a DataflowIdentifier,
+    dataflow_identifier: &'a DataflowIdentifier<'a>,
     data_key: Option<&'a DataKey>,
     start_period: Option<&'a Period>,
     end_period: Option<&'a Period>,
@@ -73,7 +73,7 @@ impl<'a> SdmxDataRequestBuilder<'a> {
     pub fn build(&self) -> SdmxDataRequest {
         let mut url_builder = UrlBuilder::new(self.base_url)
             .add_path_segment(self.path)
-            .add_path_segment(self.dataflow_identifier.to_string());
+            .add_path_segment(self.dataflow_identifier.key());
 
         if let Some(data_key) = self.data_key {
             url_builder = url_builder.add_path_segment(data_key.to_string());

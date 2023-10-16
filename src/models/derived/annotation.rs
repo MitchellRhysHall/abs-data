@@ -6,7 +6,7 @@ use super::texts::Texts;
 #[serde(rename_all = "camelCase")]
 pub struct Annotation {
     #[serde(rename = "type")]
-    pub type_field: Box<str>,
+    pub _type: Box<str>,
     pub text: Option<Box<str>>,
     pub texts: Option<Texts>,
     pub title: Option<Box<str>>,
