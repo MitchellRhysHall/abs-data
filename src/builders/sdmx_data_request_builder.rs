@@ -11,7 +11,7 @@ use crate::{
 pub struct SdmxDataRequestBuilder<'a> {
     base_url: &'a str,
     path: &'a str,
-    dataflow_identifier: &'a DataflowIdentifier<'a>,
+    dataflow_identifier: &'a DataflowIdentifier,
     data_key: Option<&'a DataKey>,
     start_period: Option<&'a Period>,
     end_period: Option<&'a Period>,

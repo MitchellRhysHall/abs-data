@@ -28,7 +28,7 @@ pub struct MetaDataSet {
     pub annotations: Option<Box<[Annotation]>>,
     pub structure: Option<Box<str>>,
     #[serde(rename = "type")]
-    pub type_field: Box<str>,
+    pub _type: Option<Box<str>>,
     pub constraint_attachment: Option<ConstraintAttachment>,
     pub cube_regions: Option<Box<[CubeRegion]>>,
 }

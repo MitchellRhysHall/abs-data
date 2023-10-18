@@ -19,7 +19,7 @@ mod tests {
             .send()
             .await?;
 
-        let dataflow = &meta_response.data[10]; // Select desired dataflow
+        let dataflow = &meta_response.data.dataflows.unwrap()[10]; // Select desired dataflow
 
         let dataflow_identifier = DataflowIdentifierBuilder::new(&dataflow.id)
             .agency_id(&dataflow.agency_id)
@@ -84,6 +84,7 @@ mod tests {
         let dataflow_identifier = DataflowIdentifierBuilder::new("CPI").build();
 
         let key = DataKeyBuilder::new(&dataflow_identifier)
+            .await
             .add("MEASURE", "1")?
             .add("INDEX", "40066")?
             .add("REGION", "8")?

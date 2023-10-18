@@ -59,8 +59,18 @@ impl<'a> SdmxRequest<'a> {
             return Err(ErrorCode::HttpEmptyResponse);
         }
 
-        let data: SdmxResponse<T> = serde_json::from_slice(&body_bytes)?;
+        match serde_json::from_slice(&body_bytes) {
+            Ok(data) => Ok(data),
+            Err(e) => {
+                // Get a snippet of the text around the error location
+                let error_position = e.column();
+                let start = error_position.saturating_sub(10);
+                let end = (error_position + 10).min(body_bytes.len());
+                let snippet = &std::str::from_utf8(&body_bytes).expect("invalid utf8")[start..end];
 
-        Ok(data)
+                // Return the enhanced error
+                return Err(ErrorCode::JsonSliceDeserialization(e, snippet.into()));
+            }
+        }
     }
 }

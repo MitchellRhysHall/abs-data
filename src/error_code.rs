@@ -11,8 +11,8 @@ pub enum ErrorCode {
     #[error("Deserialization error: {0}")]
     Serde(#[from] serde::de::value::Error),
 
-    #[error("JSON slice deserialization error: {0}")]
-    JsonSliceDeserialization(#[from] serde_json::Error),
+    #[error("JSON slice deserialization error: {0} in '{1}'")]
+    JsonSliceDeserialization(serde_json::Error, Box<str>),
 
     #[error("Empty response body")]
     HttpEmptyResponse,

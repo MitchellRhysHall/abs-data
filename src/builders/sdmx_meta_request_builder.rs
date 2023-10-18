@@ -65,14 +65,9 @@ impl<'a> SdmxMetaRequestBuilder<'a> {
     }
 
     pub fn build(&self) -> SdmxMetaRequest {
-        let mut url_builder =
-            UrlBuilder::new(self.base_url).add_path_segment(self.structure_type.to_string());
-
-        if let Some(agency_id) = self.agency_id {
-            url_builder = url_builder.add_path_segment(agency_id);
-        } else {
-            url_builder = url_builder.add_path_segment("ABS");
-        }
+        let mut url_builder = UrlBuilder::new(self.base_url)
+            .add_path_segment(self.structure_type.to_string())
+            .add_path_segment(self.agency_id.unwrap_or("ABS"));
 
         if let Some(structure_id) = self.structure_id {
             url_builder = url_builder.add_path_segment(structure_id.to_string());

@@ -1,55 +1,35 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 
 use crate::{
     builders::sdmx_meta_request_builder::SdmxMetaRequestBuilder,
-    error_code::ErrorCode,
+    cache::MetaCache,
     models::typed::{
-        dataflow_identifier::DataflowIdentifier, datakey::DataKey, reference::Reference,
-        structure_type::StructureType,
+        dataflow_identifier::DataflowIdentifier, datakey::DataKey, dimension_key::DimensionKey,
+        reference::Reference, structure_type::StructureType,
     },
     result::Result,
 };
 
 pub struct DataKeyBuilder<'a> {
-    dataflow_identifier: &'a DataflowIdentifier<'a>,
-    map_values: HashMap<&'a str, HashSet<&'a str>>,
-    map_key_index: HashMap<&'a str, u8>,
-    dimensions: HashMap<&'a str, HashSet<&'a str>>,
+    dataflow_identifier: &'a DataflowIdentifier,
+    dimensions: BTreeMap<DimensionKey<'a>, HashSet<&'a str>>,
 }
 
 impl<'a> DataKeyBuilder<'a> {
-    async fn get_meta(&self) -> Result<()> {
-        let mut builder = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
-            .structure_id(&self.dataflow_identifier.structure_id())
-            .reference(&Reference::StructureType(StructureType::ContentConstraint));
-
-        if let Some(agency_id) = self.dataflow_identifier.agency_id() {
-            builder = builder.agency_id(agency_id);
-        }
-        if let Some(version) = &self.dataflow_identifier.version() {
-            builder = builder.structure_version(version);
-        }
-
-        let response = builder.build().send().await?;
-
-        Ok(())
-    }
-
-    pub fn new(dataflow_identifier: &'a DataflowIdentifier<'a>) -> Self {
+    pub async fn new(dataflow_identifier: &'a DataflowIdentifier) -> DataKeyBuilder<'_> {
+        let _ = MetaCache::ensure_key_init(dataflow_identifier).await;
         Self {
             dataflow_identifier,
-            map_values: HashMap::new(),
-            map_key_index: HashMap::new(),
-            dimensions: HashMap::new(),
+            dimensions: BTreeMap::new(),
         }
     }
 
     pub fn add(mut self, key: &'a str, value: &'a str) -> Result<Self> {
-        let set = self.map_values.get(key).unwrap();
+        let key_values = MetaCache::get_key_values(self.dataflow_identifier);
 
-        if set.contains(value) {
+        if key_values.iter().find(|kv| kv.id.as_ref() == key).is_some() {
             self.dimensions
-                .entry(key)
+                .entry(DimensionKey::new(key, self.dataflow_identifier))
                 .or_insert_with(HashSet::new)
                 .insert(value);
         }

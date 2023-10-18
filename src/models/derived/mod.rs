@@ -12,6 +12,7 @@ pub mod dimensions;
 pub mod key_value;
 pub mod link;
 pub mod meta;
+pub mod meta_data_map;
 pub mod meta_data_sets;
 pub mod names;
 pub mod observation;

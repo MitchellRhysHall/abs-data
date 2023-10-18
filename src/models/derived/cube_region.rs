@@ -6,5 +6,5 @@ use super::key_value::KeyValue;
 #[serde(rename_all = "camelCase")]
 pub struct CubeRegion {
     pub is_included: bool,
-    pub key_values: Vec<KeyValue>,
+    pub key_values: Box<[KeyValue]>,
 }

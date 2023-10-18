@@ -1,11 +1,7 @@
-use std::collections::HashMap;
-
 use super::sdmx_request::SdmxRequest;
+use crate::models::derived::meta_data_map::MetaDataMap;
+use crate::models::derived::sdmx_response::SdmxResponse;
 use crate::result::Result;
-use crate::{
-    error_code::ErrorCode,
-    models::derived::{meta_data_sets::MetaDataSets, sdmx_response::SdmxResponse},
-};
 
 pub struct SdmxMetaRequest<'a> {
     request: SdmxRequest<'a>,
@@ -20,26 +16,8 @@ impl<'a> SdmxMetaRequest<'a> {
         self.request.headers()
     }
 
-    pub async fn send(&self) -> Result<SdmxResponse<MetaDataSets>> {
-        let mut raw = self
-            .request
-            .send::<HashMap<Box<str>, MetaDataSets>>()
-            .await?;
-
-        let meta_data_sets = raw
-            .data
-            .drain()
-            .next()
-            .ok_or(ErrorCode::HashMapNoKeyValuesFound)?
-            .1;
-
-        let response: SdmxResponse<MetaDataSets> = SdmxResponse {
-            data: meta_data_sets,
-            meta: raw.meta,
-            structure: raw.structure,
-        };
-
-        Ok(response)
+    pub async fn send(&self) -> Result<SdmxResponse<MetaDataMap>> {
+        self.request.send::<MetaDataMap>().await
     }
 }
 
