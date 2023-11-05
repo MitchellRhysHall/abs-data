@@ -36,8 +36,6 @@ impl<'a> SdmxRequest<'a> {
     where
         T: serde::de::DeserializeOwned,
     {
-        println!("{}", self.url);
-
         let mut request = self.client.inner().get(self.url.as_ref());
 
         for header in self.headers {
