@@ -17,6 +17,12 @@ pub enum ErrorCode {
     #[error("Empty response body")]
     HttpEmptyResponse,
 
+    #[error("Missing expected optional field")]
+    MissingExpectedOptionalField(Box<str>),
+
+    #[error("Missing expected value on field")]
+    MissingExpectedValueOnField(Box<str>),
+
     #[error("Url parse error: {0}")]
     UrlParse(#[from] url::ParseError),
 
@@ -28,6 +34,9 @@ pub enum ErrorCode {
 
     #[error("Data key contains non number: {0}")]
     DataKeyContainsNonNumber(Box<str>),
+
+    #[error("Data key contains invalid dimensions: {0}")]
+    DataKeyContainsInvalidDimensions(Box<str>),
 
     #[error("UTF-8 decode error: {0}")]
     Utf8Decode(#[from] std::str::Utf8Error),

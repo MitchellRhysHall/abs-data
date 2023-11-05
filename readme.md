@@ -18,7 +18,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-abs_data = "0.1"
+abs_data = "0.2.1"
 ```
 
 Example requests:

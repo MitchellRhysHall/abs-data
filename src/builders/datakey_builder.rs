@@ -36,14 +36,20 @@ impl<'a> DataKeyBuilder<'a> {
         let key_values = data
             .content_constraints
             .as_ref()
-            .ok_or(ErrorCode::Custom("cannot find content constraints".into()))?
+            .ok_or(ErrorCode::MissingExpectedOptionalField(
+                "content constraints".into(),
+            ))?
             .first()
-            .ok_or(ErrorCode::Custom("content constraint empty".into()))?
+            .ok_or(ErrorCode::MissingExpectedValueOnField(
+                "content constraint".into(),
+            ))?
             .cube_regions
             .as_ref()
-            .ok_or(ErrorCode::Custom("cube regions empty".into()))?
+            .ok_or(ErrorCode::MissingExpectedOptionalField(
+                "cube regions".into(),
+            ))?
             .first()
-            .ok_or(ErrorCode::Custom("cub regions is empty".into()))?
+            .ok_or(ErrorCode::MissingExpectedValueOnField("cub regions".into()))?
             .key_values
             .as_ref();
 
@@ -62,15 +68,23 @@ impl<'a> DataKeyBuilder<'a> {
         Ok((key_order, constraints))
     }
 
-    fn is_subset(
+    fn dimensions_not_in_constraints(
         dimensions: &HashMap<Box<str>, HashSet<Box<str>>>,
         constraints: &HashMap<Box<str>, HashSet<Box<str>>>,
-    ) -> bool {
-        dimensions.iter().all(|(key, value_set)| {
-            constraints
-                .get(key)
-                .map_or(false, |dimension_set| value_set.is_subset(dimension_set))
-        })
+    ) -> Vec<Box<str>> {
+        dimensions
+            .iter()
+            .filter_map(|(key, value_set)| {
+                if let Some(constraint_set) = constraints.get(key) {
+                    if !value_set.is_subset(constraint_set) {
+                        return Some(key.clone());
+                    }
+                } else {
+                    return Some(key.clone());
+                }
+                None
+            })
+            .collect()
     }
 
     pub fn new(dataflow_identifier: &'a DataflowIdentifier) -> Self {
@@ -92,8 +106,11 @@ impl<'a> DataKeyBuilder<'a> {
     pub async fn build(self) -> Result<DataKey> {
         let (key_order, constraints) = Self::get_constraints(self.dataflow_identifier).await?;
 
-        if !Self::is_subset(&self.dimensions, &constraints) {
-            return Err(ErrorCode::Custom("Invalid datakey dimensions".into()));
+        let errors = Self::dimensions_not_in_constraints(&self.dimensions, &constraints);
+        if !errors.is_empty() {
+            return Err(ErrorCode::DataKeyContainsInvalidDimensions(
+                format!("{:?}", errors).into(),
+            ));
         }
 
         let mut key = self
