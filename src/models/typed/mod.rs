@@ -1,8 +1,8 @@
 pub mod dataflow_identifier;
 pub mod datakey;
+pub mod datakey_dimension;
 pub mod detail;
 pub mod dimension_at_observation;
-pub mod dimension_key;
 pub mod meta_detail;
 pub mod month;
 pub mod period;

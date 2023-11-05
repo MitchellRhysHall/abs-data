@@ -7,7 +7,8 @@ mod tests {
             sdmx_meta_request_builder::SdmxMetaRequestBuilder,
         },
         models::typed::{
-            datakey::DataKey, detail::Detail, period::Period, structure_type::StructureType,
+            datakey::DataKey, datakey_dimension::DataKeyDimension, detail::Detail, period::Period,
+            structure_type::StructureType,
         },
         result::Result,
     };
@@ -84,13 +85,13 @@ mod tests {
         let dataflow_identifier = DataflowIdentifierBuilder::new("CPI").build();
 
         let key = DataKeyBuilder::new(&dataflow_identifier)
-            .await
-            .add("MEASURE", "1")?
-            .add("INDEX", "40066")?
-            .add("REGION", "8")?
-            .add("FREQ", "Q")?
-            .add("TSEST", "10")?
-            .build();
+            .add(&DataKeyDimension::new("MEASURE", "1"))
+            .add(&DataKeyDimension::new("INDEX", "40066"))
+            .add(&DataKeyDimension::new("REGION", "8"))
+            .add(&DataKeyDimension::new("FREQ", "Q"))
+            .add(&DataKeyDimension::new("TSEST", "10"))
+            .build()
+            .await?;
 
         assert_eq!(key, DataKey::parse("1.40066.10.8.Q")?);
 

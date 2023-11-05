@@ -17,13 +17,13 @@ impl DataflowIdentifier {
         structure_id: &str,
         version: Option<&Version>,
     ) -> Box<str> {
-        [
-            agency_id.as_ref().unwrap_or(&"ABS".into()),
-            &structure_id,
-            version.unwrap_or(&Version::default()).as_ref(),
-        ]
-        .join(",")
-        .into()
+        let mut parts = vec![agency_id.unwrap_or("ABS"), structure_id];
+
+        if let Some(v) = version {
+            parts.push(v.as_ref());
+        }
+
+        parts.join(",").into()
     }
 
     pub fn new(
