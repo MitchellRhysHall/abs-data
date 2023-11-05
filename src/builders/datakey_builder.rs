@@ -21,7 +21,7 @@ impl<'a> DataKeyBuilder<'a> {
         id: &DataflowIdentifier,
     ) -> Result<(HashMap<Box<str>, u8>, HashMap<Box<str>, HashSet<Box<str>>>)> {
         let mut builder = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
-            .structure_id(&id.structure_id())
+            .structure_id(id.structure_id())
             .reference(&Reference::StructureType(StructureType::ContentConstraint));
 
         if let Some(agency_id) = id.agency_id() {
@@ -50,7 +50,7 @@ impl<'a> DataKeyBuilder<'a> {
         let mut key_order = HashMap::new();
         let mut constraints = HashMap::new();
 
-        for (i, kv) in key_values.into_iter().enumerate() {
+        for (i, kv) in key_values.iter().enumerate() {
             let index = i as u8;
             let id_clone = kv.id.clone();
             let values_set: HashSet<Box<str>> = kv.values.clone().into_vec().into_iter().collect();

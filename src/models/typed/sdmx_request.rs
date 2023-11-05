@@ -72,7 +72,7 @@ impl<'a> SdmxRequest<'a> {
                 let snippet = &std::str::from_utf8(&body_bytes).expect("invalid utf8")[start..end];
 
                 // Return the enhanced error
-                return Err(ErrorCode::JsonSliceDeserialization(e, snippet.into()));
+                Err(ErrorCode::JsonSliceDeserialization(e, snippet.into()))
             }
         }
     }
