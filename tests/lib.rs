@@ -14,7 +14,7 @@ mod tests {
     };
 
     #[tokio::test]
-    async fn test1() -> Result<()> {
+    async fn get_dynamic_meta_and_use_for_request() -> Result<()> {
         let meta_response = SdmxMetaRequestBuilder::new(&StructureType::DataFlow)
             .build()
             .send()
@@ -39,22 +39,19 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test2() -> Result<()> {
+    async fn get_all_data_for_structure_id_without_filter() -> Result<()> {
         let dataflow_identifier = DataflowIdentifierBuilder::new("CPI").build();
 
-        let request_builder = SdmxDataRequestBuilder::new(&dataflow_identifier);
-
-        let request = request_builder.build();
-
-        let response = request.send().await?;
-
-        println!("{:?}", response);
+        let _response = SdmxDataRequestBuilder::new(&dataflow_identifier) // Avoid 500 response with data only detail (issue with beta api)
+            .build()
+            .send()
+            .await?;
 
         Ok(())
     }
 
     #[tokio::test]
-    async fn get_datakeys_for_dataflow() -> Result<()> {
+    async fn get_datakeys_for_structure_id() -> Result<()> {
         let dataflow_identifier = DataflowIdentifierBuilder::new("CPI").build();
 
         let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
@@ -67,7 +64,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn with_parse_datakey() -> Result<()> {
+    async fn get_data_with_custom_datakey() -> Result<()> {
         let dataflow_identifier = DataflowIdentifierBuilder::new("CPI").build();
 
         let _response = SdmxDataRequestBuilder::new(&dataflow_identifier)
@@ -81,7 +78,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn with_datakey_builder() -> Result<()> {
+    async fn get_data_with_datakey_builder_validation() -> Result<()> {
         let dataflow_identifier = DataflowIdentifierBuilder::new("CPI").build();
 
         let key = DataKeyBuilder::new(&dataflow_identifier)

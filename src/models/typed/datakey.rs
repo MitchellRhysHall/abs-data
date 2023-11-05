@@ -9,10 +9,6 @@ pub struct DataKey {
 }
 
 impl DataKey {
-    fn new(str: &str) -> Self {
-        Self { inner: str.into() }
-    }
-
     pub fn parse(str: &str) -> Result<Self> {
         Self::try_from(str)
     }

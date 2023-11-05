@@ -1,8 +1,9 @@
 use url::Url;
 
-use crate::{config::Config, error_code::ErrorCode, models::derived::sdmx_response::SdmxResponse};
-
-use crate::result::Result;
+use crate::{
+    config::Config, error_code::ErrorCode, models::derived::sdmx_response::SdmxResponse,
+    result::Result,
+};
 
 use super::sdmx_client::SdmxClient;
 
@@ -35,6 +36,8 @@ impl<'a> SdmxRequest<'a> {
     where
         T: serde::de::DeserializeOwned,
     {
+        println!("{}", self.url);
+
         let mut request = self.client.inner().get(self.url.as_ref());
 
         for header in self.headers {

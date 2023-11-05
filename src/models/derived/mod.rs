@@ -5,7 +5,7 @@ pub mod concept;
 pub mod constraint_attachment;
 pub mod cube_region;
 pub mod data;
-mod data_point;
+pub mod data_point;
 pub mod data_sets;
 pub mod data_structure_components;
 pub mod descriptions;
