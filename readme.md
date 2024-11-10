@@ -1,3 +1,12 @@
+This crate was based on the **beta** version of the ABS DATA API 
+
+As of November 29th 2024 the ABS DATA API is moving to SDMX 3.0 among other breaking changes.
+
+Please move to using the API directly at https://api.data.abs.gov.au/rest/data
+
+DO NOT USE THIS CRATE
+
+
 # ABS Data API Rust Client
 
 This Rust library provides a convenient way to interact with the Australian Bureau of Statistics (ABS) Data API [https://api.gov.au/assets/APIs/abs/DataAPI.openapi.html](https://api.gov.au/assets/APIs/abs/DataAPI.openapi.html). It Utilizes builder types for fluent requests to the API.
